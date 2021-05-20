@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField]
-    private float _speed = 3.5f;
+    private float _speed = 4.0f;
     [SerializeField]
     private int _lives = 3;
     // spawn manager reference
@@ -21,11 +21,20 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _fireRate = 0.15f;
     private float _nextFire = 0.0f;
+    // shield variables
+    [SerializeField]
+    private GameObject _shield;
     //powerup variables
+    [SerializeField]
+    private float _powerupActiveTime = 5.0f;
     [SerializeField]
     private bool _isTripleShotActive = false;
     [SerializeField]
-    private float _tripleShotActiveTime = 5.0f;
+    private bool _isSpeedBoostActive = false;
+    [SerializeField]
+    private bool _isShieldActive = false;
+    [SerializeField]
+    private float _speedMultiplier = 2;
 
     // Start is called before the first frame update
     void Start()
@@ -57,7 +66,14 @@ public class Player : MonoBehaviour
         //transform.Translate(Vector3.right * horizontalInput * _speed * Time.deltaTime);
         //transform.Translate(Vector3.up * verticalInput * _speed * Time.deltaTime);
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
-        transform.Translate(direction * _speed * Time.deltaTime);
+        if (_isSpeedBoostActive)
+        {
+            transform.Translate(direction * _speed * _speedMultiplier * Time.deltaTime);
+        }
+        else
+        {
+            transform.Translate(direction * _speed * Time.deltaTime);
+        }
 
         transform.position = new Vector3(transform.position.x, 
                                     Mathf.Clamp(transform.position.y, -3.8f, 0), 
@@ -92,6 +108,12 @@ public class Player : MonoBehaviour
 
     public void TakeDamage()
     {
+        if (_isShieldActive)
+        {
+            ShieldDeactivate();
+            return; 
+        }
+
         _lives--;
 
         if (_lives <= 0)
@@ -109,7 +131,31 @@ public class Player : MonoBehaviour
 
     IEnumerator TripleShotDeactivateRoutine()
     {
-        yield return new WaitForSeconds(_tripleShotActiveTime);
+        yield return new WaitForSeconds(_powerupActiveTime);
         _isTripleShotActive = false;
+    }
+
+    public void SpeedBoostActivate()
+    {
+        _isSpeedBoostActive = true;
+        StartCoroutine(SpeedBoostDeactivateRoutine());
+    }
+
+    IEnumerator SpeedBoostDeactivateRoutine()
+    {
+        yield return new WaitForSeconds(_powerupActiveTime);
+        _isSpeedBoostActive = false;
+    }
+
+    public void ShieldActivate()
+    {
+        _isShieldActive = true;
+        _shield.SetActive(true);
+    }
+
+    public void ShieldDeactivate()
+    {
+        _isShieldActive = false;
+        _shield.SetActive(false);
     }
 }
