@@ -8,14 +8,21 @@ public class Player : MonoBehaviour
     private float _speed = 4.0f;
     [SerializeField]
     private int _lives = 3;
-    // spawn manager reference
+    [SerializeField]
+    private int _score = 0;
+    private AudioSource _audioSource;
+    // spawn manager
     private SpawnManager _spawnManager;
+    // ui manager
+    private UIManager _uiManager;
     // prefabs
     [SerializeField]
     private GameObject _laserPrefab;
     [SerializeField]
     private GameObject _tripleShotPrefab;
     // laser variables
+    [SerializeField]
+    private AudioClip _laserSoundClip;
     [SerializeField]
     private float _laserOffset = 1.0f;
     [SerializeField]
@@ -24,7 +31,16 @@ public class Player : MonoBehaviour
     // shield variables
     [SerializeField]
     private GameObject _shield;
+    // damage variables
+    [SerializeField]
+    private GameObject _explosionPrefab;
+    [SerializeField]
+    private GameObject _rightEngineFire;
+    [SerializeField]
+    private GameObject _leftEngineFire;
     //powerup variables
+    [SerializeField]
+    private AudioClip _powerupSoundClip;
     [SerializeField]
     private float _powerupActiveTime = 5.0f;
     [SerializeField]
@@ -40,12 +56,21 @@ public class Player : MonoBehaviour
     void Start()
     {
         transform.position = new Vector3(0, 0, 0);
+        // spawn manager
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
-
         if (_spawnManager == null)
         {
             Debug.LogError("Spawn Manager is NULL.");
         }
+
+        // ui manager
+        _uiManager = GameObject.Find("UI").GetComponent<UIManager>();
+        if (_uiManager == null)
+        {
+            Debug.LogError("UI Manager is NULL.");
+        }
+
+        _audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -104,6 +129,17 @@ public class Player : MonoBehaviour
                 transform.position + new Vector3(0, _laserOffset, 0),
                 Quaternion.identity);
         }
+        _audioSource.clip = _laserSoundClip;
+        _audioSource.Play();
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "EnemyLaser")
+        {
+            Destroy(other.gameObject);
+            TakeDamage();
+        }
     }
 
     public void TakeDamage()
@@ -115,11 +151,23 @@ public class Player : MonoBehaviour
         }
 
         _lives--;
+        _uiManager.UpdateLives(_lives);
 
-        if (_lives <= 0)
+        switch (_lives)
         {
-            _spawnManager.OnPlayerDeath();
-            Destroy(this.gameObject);
+            case 2:
+                _rightEngineFire.SetActive(true);
+                break;
+            case 1:
+                _leftEngineFire.SetActive(true);
+                break;
+            case 0:
+                _spawnManager.OnPlayerDeath();
+                Instantiate(_explosionPrefab, transform.position, transform.rotation);
+                Destroy(this.gameObject);
+                break;
+            default:
+                break;
         }
     }
 
@@ -127,6 +175,7 @@ public class Player : MonoBehaviour
     {
         _isTripleShotActive = true;
         StartCoroutine(TripleShotDeactivateRoutine());
+        PlayPowerupSound();
     }
 
     IEnumerator TripleShotDeactivateRoutine()
@@ -139,6 +188,7 @@ public class Player : MonoBehaviour
     {
         _isSpeedBoostActive = true;
         StartCoroutine(SpeedBoostDeactivateRoutine());
+        PlayPowerupSound();
     }
 
     IEnumerator SpeedBoostDeactivateRoutine()
@@ -151,11 +201,29 @@ public class Player : MonoBehaviour
     {
         _isShieldActive = true;
         _shield.SetActive(true);
+        PlayPowerupSound();
     }
 
     public void ShieldDeactivate()
     {
         _isShieldActive = false;
         _shield.SetActive(false);
+    }
+
+    void PlayPowerupSound()
+    {
+        _audioSource.clip = _powerupSoundClip;
+        _audioSource.Play();
+    }
+
+    public void AddToScore(int n)
+    {
+        _score += n;
+        _uiManager.UpdateScore(_score);
+    }
+
+    public int GetScore()
+    {
+        return _score;
     }
 }

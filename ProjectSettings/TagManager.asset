@@ -8,6 +8,7 @@ TagManager:
   - Laser
   - Powerup
   - Shield
+  - EnemyLaser
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - Post Processing
   - 
   - 
   - 
@@ -47,6 +48,9 @@ TagManager:
     locked: 0
   - name: Background
     uniqueID: 2980258849
+    locked: 0
+  - name: Middleground
+    uniqueID: 2128221767
     locked: 0
   - name: Foreground
     uniqueID: 3912704471
