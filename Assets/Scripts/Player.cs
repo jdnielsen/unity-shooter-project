@@ -51,6 +51,10 @@ public class Player : MonoBehaviour
     private bool _isShieldActive = false;
     [SerializeField]
     private float _speedMultiplier = 2;
+    // thrusters
+    [SerializeField]
+    private float _thrusterSpeedIncrease = 2.0f;
+    private bool _isThrusterActive = false;
 
     // Start is called before the first frame update
     void Start()
@@ -76,6 +80,14 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            _isThrusterActive = true;
+        }
+        else
+        {
+            _isThrusterActive = false;
+        }
         CalculateMovement();
         
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _nextFire)
@@ -86,20 +98,29 @@ public class Player : MonoBehaviour
 
     void CalculateMovement()
     {
+        // direction
         float verticalInput = Input.GetAxis("Vertical");
         float horizontalInput = Input.GetAxis("Horizontal");
-        //transform.Translate(Vector3.right * horizontalInput * _speed * Time.deltaTime);
-        //transform.Translate(Vector3.up * verticalInput * _speed * Time.deltaTime);
+
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
+
+        // speed
+        float _adjustedSpeed = _speed;
+        if (_isThrusterActive)
+        {
+            _adjustedSpeed += _thrusterSpeedIncrease;
+        }
+
         if (_isSpeedBoostActive)
         {
-            transform.Translate(direction * _speed * _speedMultiplier * Time.deltaTime);
+            transform.Translate(direction * _adjustedSpeed * _speedMultiplier * Time.deltaTime);
         }
         else
         {
-            transform.Translate(direction * _speed * Time.deltaTime);
+            transform.Translate(direction * _adjustedSpeed * Time.deltaTime);
         }
 
+        // game boundaries
         transform.position = new Vector3(transform.position.x, 
                                     Mathf.Clamp(transform.position.y, -3.8f, 0), 
                                     transform.position.z);
