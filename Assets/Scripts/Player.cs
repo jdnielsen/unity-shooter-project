@@ -31,6 +31,9 @@ public class Player : MonoBehaviour
     // shield variables
     [SerializeField]
     private GameObject _shield;
+    private Renderer _shieldRenderer;
+    [SerializeField]
+    private int _shieldStrength = 0;
     // damage variables
     [SerializeField]
     private GameObject _explosionPrefab;
@@ -73,6 +76,18 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("UI Manager is NULL.");
         }
+
+        // shield renderer
+        if (_shield == null)
+        {
+            Debug.LogError("Player Shield is NULL.");
+        }
+        _shieldRenderer = _shield.GetComponent<Renderer>();
+        if (_shieldRenderer == null)
+        {
+            Debug.LogError("Player Shield Renderer is NULL.");
+        }
+        _shieldRenderer.material.color = Color.black;
 
         _audioSource = GetComponent<AudioSource>();
     }
@@ -167,7 +182,7 @@ public class Player : MonoBehaviour
     {
         if (_isShieldActive)
         {
-            ShieldDeactivate();
+            ShieldTakeDamage();
             return; 
         }
 
@@ -221,14 +236,51 @@ public class Player : MonoBehaviour
     public void ShieldActivate()
     {
         _isShieldActive = true;
+        _shieldStrength = 3;
+        StartCoroutine(ShieldPowerupCoroutine());
         _shield.SetActive(true);
         PlayPowerupSound();
     }
 
-    public void ShieldDeactivate()
+    public void ShieldTakeDamage()
     {
-        _isShieldActive = false;
-        _shield.SetActive(false);
+        _shieldStrength--;
+        StartCoroutine(ShieldDamageCoroutine());
+
+        if (_shieldStrength <= 0)
+        {
+            _isShieldActive = false;
+            _shield.SetActive(false);
+        }
+    }
+
+    IEnumerator ShieldPowerupCoroutine()
+    {
+        Color currentColor = _shieldRenderer.material.color;
+
+        while (currentColor.r < 1f)
+        {
+            _shieldRenderer.material.color = new Color(currentColor.r + 0.03f, 
+                                                       currentColor.g + 0.03f, 
+                                                       currentColor.b + 0.03f);
+            yield return new WaitForSeconds(0.01f);
+            currentColor = _shieldRenderer.material.color;
+        }
+    }
+
+    IEnumerator ShieldDamageCoroutine()
+    {
+        float targetStrength = _shieldStrength * 0.333f;
+        Color currentColor = _shieldRenderer.material.color;
+
+        while (currentColor.r > targetStrength)
+        {
+            _shieldRenderer.material.color = new Color(currentColor.r - 0.03f, 
+                                                       currentColor.g - 0.03f, 
+                                                       currentColor.b - 0.03f);
+            yield return new WaitForSeconds(0.01f);
+            currentColor = _shieldRenderer.material.color;
+        }
     }
 
     void PlayPowerupSound()
