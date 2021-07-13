@@ -51,13 +51,10 @@ public class Player : MonoBehaviour
     [SerializeField]
     private bool _isSpeedBoostActive = false;
     [SerializeField]
-    private bool _isShieldActive = false;
-    [SerializeField]
     private float _speedMultiplier = 2;
     // thrusters
     [SerializeField]
     private float _thrusterSpeedIncrease = 2.0f;
-    private bool _isThrusterActive = false;
 
     // Start is called before the first frame update
     void Start()
@@ -87,7 +84,7 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("Player Shield Renderer is NULL.");
         }
-        _shieldRenderer.material.color = Color.black;
+        _shieldRenderer.material.color = new Color(1f, 1f, 1f, 0f);
 
         _audioSource = GetComponent<AudioSource>();
     }
@@ -95,14 +92,6 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            _isThrusterActive = true;
-        }
-        else
-        {
-            _isThrusterActive = false;
-        }
         CalculateMovement();
         
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _nextFire)
@@ -121,7 +110,7 @@ public class Player : MonoBehaviour
 
         // speed
         float _adjustedSpeed = _speed;
-        if (_isThrusterActive)
+        if (Input.GetKey(KeyCode.LeftShift))
         {
             _adjustedSpeed += _thrusterSpeedIncrease;
         }
@@ -180,7 +169,7 @@ public class Player : MonoBehaviour
 
     public void TakeDamage()
     {
-        if (_isShieldActive)
+        if (_shieldStrength > 0)
         {
             ShieldTakeDamage();
             return; 
@@ -235,7 +224,6 @@ public class Player : MonoBehaviour
 
     public void ShieldActivate()
     {
-        _isShieldActive = true;
         _shieldStrength = 3;
         StartCoroutine(ShieldPowerupCoroutine());
         _shield.SetActive(true);
@@ -249,7 +237,6 @@ public class Player : MonoBehaviour
 
         if (_shieldStrength <= 0)
         {
-            _isShieldActive = false;
             _shield.SetActive(false);
         }
     }
@@ -258,11 +245,9 @@ public class Player : MonoBehaviour
     {
         Color currentColor = _shieldRenderer.material.color;
 
-        while (currentColor.r < 1f)
+        while (currentColor.a < 1f)
         {
-            _shieldRenderer.material.color = new Color(currentColor.r + 0.03f, 
-                                                       currentColor.g + 0.03f, 
-                                                       currentColor.b + 0.03f);
+            _shieldRenderer.material.color = new Color(1f, 1f, 1f, currentColor.a + 0.03f);
             yield return new WaitForSeconds(0.01f);
             currentColor = _shieldRenderer.material.color;
         }
@@ -273,11 +258,9 @@ public class Player : MonoBehaviour
         float targetStrength = _shieldStrength * 0.333f;
         Color currentColor = _shieldRenderer.material.color;
 
-        while (currentColor.r > targetStrength)
+        while (currentColor.a > targetStrength)
         {
-            _shieldRenderer.material.color = new Color(currentColor.r - 0.03f, 
-                                                       currentColor.g - 0.03f, 
-                                                       currentColor.b - 0.03f);
+            _shieldRenderer.material.color = new Color(1f, 1f, 1f, currentColor.a - 0.03f);
             yield return new WaitForSeconds(0.01f);
             currentColor = _shieldRenderer.material.color;
         }
