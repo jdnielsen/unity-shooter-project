@@ -46,6 +46,8 @@ public class Player : MonoBehaviour
     private AudioClip _powerupSoundClip;
     [SerializeField]
     private float _powerupActiveTime = 5.0f;
+    private float _tripleShotRemainingTime = 0f;
+    private float _speedBoostRemainingTime = 0f;
     [SerializeField]
     private bool _isTripleShotActive = false;
     [SerializeField]
@@ -198,34 +200,50 @@ public class Player : MonoBehaviour
 
     public void TripleShotActivate()
     {
-        _isTripleShotActive = true;
-        StartCoroutine(TripleShotDeactivateRoutine());
+        _tripleShotRemainingTime = _powerupActiveTime;
         PlayPowerupSound();
+        if (!_isTripleShotActive)
+        {
+            _isTripleShotActive = true;
+            StartCoroutine(TripleShotDeactivateRoutine());
+        }
     }
 
     IEnumerator TripleShotDeactivateRoutine()
     {
-        yield return new WaitForSeconds(_powerupActiveTime);
+        while (_tripleShotRemainingTime > 0)
+        {
+            yield return new WaitForSeconds(1f);
+            _tripleShotRemainingTime = _tripleShotRemainingTime - 1f;
+        }
         _isTripleShotActive = false;
     }
 
     public void SpeedBoostActivate()
     {
-        _isSpeedBoostActive = true;
-        StartCoroutine(SpeedBoostDeactivateRoutine());
+        _speedBoostRemainingTime = _powerupActiveTime;
         PlayPowerupSound();
+        if (!_isSpeedBoostActive)
+        {
+            _isSpeedBoostActive = true;
+            StartCoroutine(SpeedBoostDeactivateRoutine());
+        }
     }
 
     IEnumerator SpeedBoostDeactivateRoutine()
     {
-        yield return new WaitForSeconds(_powerupActiveTime);
+        while (_speedBoostRemainingTime > 0)
+        {
+            yield return new WaitForSeconds(1f);
+            _speedBoostRemainingTime = _speedBoostRemainingTime - 1f;
+        }
         _isSpeedBoostActive = false;
     }
 
     public void ShieldActivate()
     {
         _shieldStrength = 3;
-        StartCoroutine(ShieldPowerupCoroutine());
+        StartCoroutine(ChangeShieldAppearanceCoroutine(true));
         _shield.SetActive(true);
         PlayPowerupSound();
     }
@@ -233,36 +251,33 @@ public class Player : MonoBehaviour
     public void ShieldTakeDamage()
     {
         _shieldStrength--;
-        StartCoroutine(ShieldDamageCoroutine());
-
+        StartCoroutine(ChangeShieldAppearanceCoroutine(false));
         if (_shieldStrength <= 0)
         {
             _shield.SetActive(false);
         }
     }
 
-    IEnumerator ShieldPowerupCoroutine()
+    IEnumerator ChangeShieldAppearanceCoroutine(bool isRestoringShield)
     {
-        Color currentColor = _shieldRenderer.material.color;
+        float targetAlpha = _shieldStrength * 0.333f;
+        float step = 0.03f;
 
-        while (currentColor.a < 1f)
+        if (isRestoringShield)
         {
-            _shieldRenderer.material.color = new Color(1f, 1f, 1f, currentColor.a + 0.03f);
-            yield return new WaitForSeconds(0.01f);
-            currentColor = _shieldRenderer.material.color;
+            while (_shieldRenderer.material.color.a < targetAlpha)
+            {
+                _shieldRenderer.material.color = new Color(1f, 1f, 1f, _shieldRenderer.material.color.a + step);
+                yield return new WaitForSeconds(0.01f);
+            }
         }
-    }
-
-    IEnumerator ShieldDamageCoroutine()
-    {
-        float targetStrength = _shieldStrength * 0.333f;
-        Color currentColor = _shieldRenderer.material.color;
-
-        while (currentColor.a > targetStrength)
+        else
         {
-            _shieldRenderer.material.color = new Color(1f, 1f, 1f, currentColor.a - 0.03f);
-            yield return new WaitForSeconds(0.01f);
-            currentColor = _shieldRenderer.material.color;
+            while (_shieldRenderer.material.color.a > targetAlpha)
+            {
+                _shieldRenderer.material.color = new Color(1f, 1f, 1f, _shieldRenderer.material.color.a - step);
+                yield return new WaitForSeconds(0.01f);
+            }
         }
     }
 
