@@ -24,10 +24,16 @@ public class Player : MonoBehaviour
     [SerializeField]
     private AudioClip _laserSoundClip;
     [SerializeField]
+    private AudioClip _laserFailSoundClip;
+    [SerializeField]
     private float _laserOffset = 1.0f;
     [SerializeField]
     private float _fireRate = 0.15f;
     private float _nextFire = 0.0f;
+    [SerializeField]
+    private int _maxAmmo = 15;
+    [SerializeField]
+    private int _currentAmmo;
     // shield variables
     [SerializeField]
     private GameObject _shield;
@@ -88,21 +94,25 @@ public class Player : MonoBehaviour
         }
         _shieldRenderer.material.color = new Color(1f, 1f, 1f, 0f);
 
+        // audio source
         _audioSource = GetComponent<AudioSource>();
+        if (_audioSource == null)
+        {
+            Debug.LogError("Audio Source is NULL.");
+        }
+
+        // ammo
+        _currentAmmo = _maxAmmo;
     }
 
     // Update is called once per frame
     void Update()
     {
-        CalculateMovement();
-        
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _nextFire)
-        {
-            FireLaser();
-        }
+        HandleMovement();
+        FireLaser();
     }
 
-    void CalculateMovement()
+    void HandleMovement()
     {
         // direction
         float verticalInput = Input.GetAxis("Vertical");
@@ -141,24 +151,39 @@ public class Player : MonoBehaviour
         }
     }
 
+
     void FireLaser()
     {
-        _nextFire = Time.time + _fireRate;
-        if (_isTripleShotActive)
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _nextFire)
         {
-            Instantiate(_tripleShotPrefab,
-                transform.position,
-                Quaternion.identity);
+            _nextFire = Time.time + _fireRate;
+            if (_currentAmmo > 0)
+            {
+                if (_isTripleShotActive)
+                {
+                    Instantiate(_tripleShotPrefab,
+                        transform.position,
+                        Quaternion.identity);
+                }
+                else
+                {
+                    Instantiate(_laserPrefab,
+                        transform.position + new Vector3(0, _laserOffset, 0),
+                        Quaternion.identity);
+                }
+                _audioSource.clip = _laserSoundClip;
+                _audioSource.Play();
+                _currentAmmo--;
+                _uiManager.UpdateAmmo(_currentAmmo, _maxAmmo);
+            }
+            else
+            {
+                _audioSource.clip = _laserFailSoundClip;
+                _audioSource.Play();
+            }
         }
-        else
-        {
-            Instantiate(_laserPrefab,
-                transform.position + new Vector3(0, _laserOffset, 0),
-                Quaternion.identity);
-        }
-        _audioSource.clip = _laserSoundClip;
-        _audioSource.Play();
     }
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -197,6 +222,24 @@ public class Player : MonoBehaviour
                 break;
         }
     }
+
+
+    public void AmmoPickup()
+    {
+        PlayPowerupSound();
+        StartCoroutine(FillAmmoCoroutine());
+    }
+
+    IEnumerator FillAmmoCoroutine()
+    {
+        while (_currentAmmo < _maxAmmo)
+        {
+            _currentAmmo++;
+            _uiManager.UpdateAmmo(_currentAmmo, _maxAmmo);
+            yield return new WaitForSeconds(0.05f);
+        }
+    }
+
 
     public void TripleShotActivate()
     {

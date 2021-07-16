@@ -13,6 +13,8 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Text _restartGameText;
     [SerializeField]
+    private Image _ammoMeter;
+    [SerializeField]
     private Image _livesImg;
     [SerializeField]
     private Sprite[] _liveSprites;
@@ -29,6 +31,7 @@ public class UIManager : MonoBehaviour
         _gameOverText.gameObject.SetActive(false);
         _restartGameText.gameObject.SetActive(false);
 
+        // game manager
         _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         if (_gameManager == null)
         {
@@ -61,6 +64,14 @@ public class UIManager : MonoBehaviour
             }
         }
     }
+
+
+    public void UpdateAmmo(int ammo, int maxAmmo = 15)
+    {
+        float ammoLevel = (float)ammo / maxAmmo;
+        _ammoMeter.fillAmount = ammoLevel;
+    }
+
 
     void GameOverSequence()
     {
