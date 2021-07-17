@@ -203,12 +203,23 @@ public class Player : MonoBehaviour
         }
 
         _lives--;
+        UpdateHealth();
+    }
+
+
+    void UpdateHealth()
+    {
         _uiManager.UpdateLives(_lives);
 
         switch (_lives)
         {
+            case 3:
+                _rightEngineFire.SetActive(false);
+                _leftEngineFire.SetActive(false);
+                break;
             case 2:
                 _rightEngineFire.SetActive(true);
+                _leftEngineFire.SetActive(false);
                 break;
             case 1:
                 _leftEngineFire.SetActive(true);
@@ -238,6 +249,17 @@ public class Player : MonoBehaviour
             _uiManager.UpdateAmmo(_currentAmmo, _maxAmmo);
             yield return new WaitForSeconds(0.05f);
         }
+    }
+
+
+    public void HealthPickup()
+    {
+        PlayPowerupSound();
+        if (_lives < 3)
+        {
+            _lives++;
+        }
+        UpdateHealth();
     }
 
 
