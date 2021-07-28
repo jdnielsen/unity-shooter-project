@@ -111,4 +111,9 @@ public class Enemy : MonoBehaviour
         _audioSource.clip = _laserSoundClip;
         _audioSource.Play();
     }
+
+    public bool IsDead()
+    {
+        return _isDead;
+    }
 }

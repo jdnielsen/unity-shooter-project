@@ -15,13 +15,24 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private List<GameObject> _powerups;
 
+    List<int> _chanceRanges;
+    int _totalChances;
+
     private bool _stopSpawning = false;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        _chanceRanges = new List<int>();
+        _totalChances = 0;
+        foreach (GameObject powerup in _powerups)
+        {
+            _totalChances += powerup.GetComponent<Powerup>()._chances;
+            _chanceRanges.Add(_totalChances);
+        }
     }
+
 
     // Update is called once per frame
     void Update()
@@ -55,7 +66,22 @@ public class SpawnManager : MonoBehaviour
         {
             float randomX = Random.Range(-8.0f, 8.0f);
             Vector3 powerupPos = new Vector3(randomX, 7.0f, 0.0f);
-            int powerupId = Random.Range(0, _powerups.Count);
+
+
+
+            int randRoll = Random.Range(0, _totalChances);
+            int powerupId = 0;
+            for (int i = 0; i < _powerups.Count; i++)
+            {
+                if (randRoll < _chanceRanges[i])
+                {
+                    powerupId = i;
+                    break;
+                }
+            }
+
+
+
             Instantiate(_powerups[powerupId], powerupPos, Quaternion.identity);
 
             float nextPowerupSpawn = Random.Range(3.0f, 7.0f);

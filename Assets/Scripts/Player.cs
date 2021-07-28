@@ -20,6 +20,11 @@ public class Player : MonoBehaviour
     private GameObject _laserPrefab;
     [SerializeField]
     private GameObject _tripleShotPrefab;
+    [SerializeField]
+    private GameObject _missilePrefab;
+    // missile variables
+    [SerializeField]
+    private AudioClip _missileSoundClip;
     // laser variables
     [SerializeField]
     private AudioClip _laserSoundClip;
@@ -54,6 +59,7 @@ public class Player : MonoBehaviour
     private float _powerupActiveTime = 5.0f;
     private float _tripleShotRemainingTime = 0f;
     private float _speedBoostRemainingTime = 0f;
+    private float _missileRemainingTime = 0f;
     [SerializeField]
     private bool _isTripleShotActive = false;
     [SerializeField]
@@ -63,6 +69,8 @@ public class Player : MonoBehaviour
     // thrusters
     [SerializeField]
     private float _thrusterSpeedIncrease = 2.0f;
+
+    GameObject asteroid;
 
     // Start is called before the first frame update
     void Start()
@@ -157,20 +165,30 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _nextFire)
         {
             _nextFire = Time.time + _fireRate;
-            if (_currentAmmo > 0)
+            // homing missile
+            if (_missileRemainingTime > 0f)
             {
-                if (_isTripleShotActive)
-                {
-                    Instantiate(_tripleShotPrefab,
-                        transform.position,
-                        Quaternion.identity);
-                }
-                else
-                {
-                    Instantiate(_laserPrefab,
-                        transform.position + new Vector3(0, _laserOffset, 0),
-                        Quaternion.identity);
-                }
+                Instantiate(_missilePrefab,
+                    transform.position + new Vector3(0, _laserOffset, 0),
+                    Quaternion.identity);
+                _audioSource.clip = _missileSoundClip;
+                _audioSource.Play();
+            }
+            // triple shot
+            else if (_isTripleShotActive)
+            {
+                Instantiate(_tripleShotPrefab,
+                    transform.position,
+                    Quaternion.identity);
+                _audioSource.clip = _laserSoundClip;
+                _audioSource.Play();
+            }
+            // normal laser
+            else if (_currentAmmo > 0)
+            {
+                Instantiate(_laserPrefab,
+                    transform.position + new Vector3(0, _laserOffset, 0),
+                    Quaternion.identity);
                 _audioSource.clip = _laserSoundClip;
                 _audioSource.Play();
                 _currentAmmo--;
@@ -262,6 +280,22 @@ public class Player : MonoBehaviour
         UpdateHealth();
     }
 
+    public void HomingMissileActivate()
+    {
+        _missileRemainingTime = _powerupActiveTime;
+        PlayPowerupSound();
+        StartCoroutine(HomingMissileDeactivateCoroutine());
+    }
+
+    IEnumerator HomingMissileDeactivateCoroutine()
+    {
+        while (_missileRemainingTime > 0)
+        {
+            yield return new WaitForSeconds(1f);
+            _missileRemainingTime = _missileRemainingTime - 1f;
+        }
+        _missileRemainingTime = 0f;
+    }
 
     public void TripleShotActivate()
     {

@@ -8,6 +8,8 @@ public class Powerup : MonoBehaviour
     private float _speed = 3.0f;
     [SerializeField] // 0: Triple Shot, 1: Speed, 2: Shields
     private int _powerupId;
+    [SerializeField]
+    public int _chances;
 
     // Start is called before the first frame update
     void Start()
@@ -49,6 +51,9 @@ public class Powerup : MonoBehaviour
                         break;
                     case 4:
                         player.HealthPickup();
+                        break;
+                    case 5:
+                        player.HomingMissileActivate();
                         break;
                     default:
                         Debug.Log("Powerup ID not found.");

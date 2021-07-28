@@ -99,6 +99,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 3
   _powerupId: 4
+  _chances: 5
 --- !u!58 &9061177117727536873
 CircleCollider2D:
   m_ObjectHideFlags: 0
