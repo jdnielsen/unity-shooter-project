@@ -61,10 +61,6 @@ public class Player : MonoBehaviour
     private float _speedBoostRemainingTime = 0f;
     private float _missileRemainingTime = 0f;
     [SerializeField]
-    private bool _isTripleShotActive = false;
-    [SerializeField]
-    private bool _isSpeedBoostActive = false;
-    [SerializeField]
     private float _speedMultiplier = 2;
     // thrusters
     [SerializeField]
@@ -135,7 +131,7 @@ public class Player : MonoBehaviour
             _adjustedSpeed += _thrusterSpeedIncrease;
         }
 
-        if (_isSpeedBoostActive)
+        if (_speedBoostRemainingTime > 0f)
         {
             transform.Translate(direction * _adjustedSpeed * _speedMultiplier * Time.deltaTime);
         }
@@ -175,7 +171,7 @@ public class Player : MonoBehaviour
                 _audioSource.Play();
             }
             // triple shot
-            else if (_isTripleShotActive)
+            else if (_tripleShotRemainingTime > 0f)
             {
                 Instantiate(_tripleShotPrefab,
                     transform.position,
@@ -282,61 +278,71 @@ public class Player : MonoBehaviour
 
     public void HomingMissileActivate()
     {
-        _missileRemainingTime = _powerupActiveTime;
         PlayPowerupSound();
-        StartCoroutine(HomingMissileDeactivateCoroutine());
+        if (_missileRemainingTime <= 0f)
+        {
+            StartCoroutine(HomingMissileDeactivateCoroutine());
+        }
+        else
+        {
+            _missileRemainingTime = _powerupActiveTime;
+        }
     }
 
     IEnumerator HomingMissileDeactivateCoroutine()
     {
-        while (_missileRemainingTime > 0)
+        _missileRemainingTime = _powerupActiveTime;
+        while (_missileRemainingTime > 0f)
         {
             yield return new WaitForSeconds(1f);
             _missileRemainingTime = _missileRemainingTime - 1f;
         }
-        _missileRemainingTime = 0f;
     }
 
     public void TripleShotActivate()
     {
-        _tripleShotRemainingTime = _powerupActiveTime;
         PlayPowerupSound();
-        if (!_isTripleShotActive)
+        if (_tripleShotRemainingTime <= 0f)
         {
-            _isTripleShotActive = true;
             StartCoroutine(TripleShotDeactivateRoutine());
+        }
+        else
+        {
+            _tripleShotRemainingTime = _powerupActiveTime;
         }
     }
 
     IEnumerator TripleShotDeactivateRoutine()
     {
-        while (_tripleShotRemainingTime > 0)
+        _tripleShotRemainingTime = _powerupActiveTime;
+        while (_tripleShotRemainingTime > 0f)
         {
             yield return new WaitForSeconds(1f);
             _tripleShotRemainingTime = _tripleShotRemainingTime - 1f;
         }
-        _isTripleShotActive = false;
     }
 
     public void SpeedBoostActivate()
     {
-        _speedBoostRemainingTime = _powerupActiveTime;
         PlayPowerupSound();
-        if (!_isSpeedBoostActive)
+        if (_speedBoostRemainingTime <= 0f)
         {
-            _isSpeedBoostActive = true;
             StartCoroutine(SpeedBoostDeactivateRoutine());
+        }
+        else
+        {
+            _speedBoostRemainingTime = _powerupActiveTime;
         }
     }
 
     IEnumerator SpeedBoostDeactivateRoutine()
     {
-        while (_speedBoostRemainingTime > 0)
+        _speedBoostRemainingTime = _powerupActiveTime;
+        while (_speedBoostRemainingTime > 0f)
         {
             yield return new WaitForSeconds(1f);
             _speedBoostRemainingTime = _speedBoostRemainingTime - 1f;
         }
-        _isSpeedBoostActive = false;
     }
 
     public void ShieldActivate()
