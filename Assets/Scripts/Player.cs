@@ -135,11 +135,11 @@ public class Player : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftShift) && _thrusterEnergyCurrent > 0f)
         {
             _adjustedSpeed += _thrusterSpeedIncrease;
-            _thrusterEnergyCurrent -= 50f * Time.deltaTime;
+            _thrusterEnergyCurrent = Mathf.MoveTowards(_thrusterEnergyCurrent, 0f, 50f * Time.deltaTime);
         }
         else
         {
-            _thrusterEnergyCurrent += 20f * Time.deltaTime;
+            _thrusterEnergyCurrent = Mathf.MoveTowards(_thrusterEnergyCurrent, _thrusterEnergyMax, 20f * Time.deltaTime);
         }
         _uiManager.UpdateThruster(_thrusterEnergyCurrent, _thrusterEnergyMax);
 
