@@ -65,6 +65,10 @@ public class Player : MonoBehaviour
     // thrusters
     [SerializeField]
     private float _thrusterSpeedIncrease = 2.0f;
+    [SerializeField]
+    private float _thrusterEnergyMax = 6f;
+    [SerializeField]
+    private float _thrusterEnergyCurrent;
 
     GameObject asteroid;
 
@@ -107,6 +111,8 @@ public class Player : MonoBehaviour
 
         // ammo
         _currentAmmo = _maxAmmo;
+        // thrusters
+        _thrusterEnergyCurrent = _thrusterEnergyMax;
     }
 
     // Update is called once per frame
@@ -126,10 +132,16 @@ public class Player : MonoBehaviour
 
         // speed
         float _adjustedSpeed = _speed;
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && _thrusterEnergyCurrent > 0f)
         {
             _adjustedSpeed += _thrusterSpeedIncrease;
+            _thrusterEnergyCurrent -= 50f * Time.deltaTime;
         }
+        else
+        {
+            _thrusterEnergyCurrent += 20f * Time.deltaTime;
+        }
+        _uiManager.UpdateThruster(_thrusterEnergyCurrent, _thrusterEnergyMax);
 
         if (_speedBoostRemainingTime > 0f)
         {

@@ -15,6 +15,8 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Image _ammoMeter;
     [SerializeField]
+    private Image _thrusterMeter;
+    [SerializeField]
     private Image _livesImg;
     [SerializeField]
     private Sprite[] _liveSprites;
@@ -70,6 +72,12 @@ public class UIManager : MonoBehaviour
     {
         float ammoLevel = (float)ammo / maxAmmo;
         _ammoMeter.fillAmount = ammoLevel;
+    }
+
+    public void UpdateThruster(float energy, float maxEnergy)
+    {
+        float energyLevel = energy / maxEnergy;
+        _thrusterMeter.fillAmount = energyLevel;
     }
 
 
