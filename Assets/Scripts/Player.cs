@@ -15,6 +15,8 @@ public class Player : MonoBehaviour
     private SpawnManager _spawnManager;
     // ui manager
     private UIManager _uiManager;
+    // camera
+    private Camera _camera;
     // prefabs
     [SerializeField]
     private GameObject _laserPrefab;
@@ -88,6 +90,13 @@ public class Player : MonoBehaviour
         if (_uiManager == null)
         {
             Debug.LogError("UI Manager is NULL.");
+        }
+
+        // camera
+        _camera = GameObject.Find("Main Camera").GetComponent<Camera>();
+        if (_camera == null)
+        {
+            Debug.LogError("Camera is NULL.");
         }
 
         // shield renderer
@@ -220,8 +229,10 @@ public class Player : MonoBehaviour
         }
     }
 
+
     public void TakeDamage()
     {
+        StartCoroutine(_camera.Shake(.25f, .5f));
         if (_shieldStrength > 0)
         {
             ShieldTakeDamage();
