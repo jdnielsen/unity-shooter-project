@@ -2,10 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+enum MovementPattern
+{
+    ForwardOnly = 0,
+    ChasePlayer = 1,
+    TurnToBottom = 2,
+    Strafing = 3
+}
+
 public class Enemy : MonoBehaviour
 {
     [SerializeField]
-    private float _speed = 4.0f;
+    private float _speed = 4f;
     [SerializeField]
     private AudioClip _explosionSoundClip;
     [SerializeField]
@@ -19,6 +27,14 @@ public class Enemy : MonoBehaviour
     private BoxCollider2D _collider;
     private bool _isDead;
     private float _nextFire;
+
+    public SpawnData _spawnData;
+    Vector3 _spawnPos;
+    MovementPattern _movementPattern = MovementPattern.ForwardOnly;
+    // float _currentAngle = 0;
+    // float _angleChange = 5f;
+    float _strafeSpeed = 2f;
+    float _rotationSpeed = 12f;
 
     // Start is called before the first frame update
     void Start()
@@ -49,23 +65,137 @@ public class Enemy : MonoBehaviour
 
         _isDead = false;
         _nextFire = Time.time + Random.Range(3f, 7f);
+
+        _spawnPos = transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (transform.position.y < -6f || transform.position.y > 12f || 
+            transform.position.x > 12f || transform.position.x < -12f)
+        {
+            HandleScreenExit();
+        }
+
+        if (!_isDead)
+        {
+            HandleMovement();
+            if (Time.time > _nextFire)
+            {
+                FireLaser();
+            }
+        }
+    }
+
+    public void SetupEnemy(SpawnData spawnData)
+    {
+        _spawnData = spawnData;
+
+        int randomPattern = Random.Range(0, 4);
+        _movementPattern = (MovementPattern)randomPattern;
+    }
+
+    void HandleMovement()
+    {
+        switch (_movementPattern)
+        {
+            case MovementPattern.ForwardOnly:
+                MoveForwardOnly();
+                break;
+            //case MovementPattern.Swerving:
+            //    MoveSwerving();
+            //    break;
+            case MovementPattern.ChasePlayer:
+                MoveChasePlayer();
+                break;
+            case MovementPattern.TurnToBottom:
+                MoveTurnToBottom();
+                break;
+            case MovementPattern.Strafing:
+                MoveStrafing();
+                break;
+            default:
+                MoveForwardOnly();
+                break;
+        }
+    }
+
+    void MoveForwardOnly()
+    {
         transform.Translate(Vector3.down * _speed * Time.deltaTime);
+    }
 
-        if (transform.position.y < -5.0f)
+    //void MoveSwerving()
+    //{
+    //    if (Mathf.Abs(_currentAngle) >= 20f)
+    //    {
+    //        _angleChange = -_angleChange;
+    //    }
+    //    _currentAngle += _angleChange * Time.deltaTime;
+    //    transform.Rotate(0f, 0f, _angleChange * Time.deltaTime);
+
+    //    transform.Translate(Vector3.down * _speed * Time.deltaTime);
+    //}
+
+    void MoveTurnToBottom()
+    {
+        Quaternion toRotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, _rotationSpeed * Time.deltaTime);
+        
+        transform.Translate(Vector3.down * _speed * Time.deltaTime);
+    }
+
+    void MoveChasePlayer()
+    {
+        Vector3 direction = transform.position - _player.transform.position;
+        direction.Normalize();
+
+        Quaternion toRotation = Quaternion.LookRotation(Vector3.forward, direction);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, _rotationSpeed * Time.deltaTime);
+
+        transform.Translate(Vector3.down * _speed * Time.deltaTime);
+    }
+
+    void MoveStrafing()
+    {
+        if (_spawnPos.x < 0)
         {
-            float randomX = Random.Range(-8.0f, 8.0f);
-            transform.position = new Vector3(randomX, 7.0f, transform.position.z);
+            transform.Translate(Vector3.right * _strafeSpeed * Time.deltaTime);
+        }
+        else
+        {
+            transform.Translate(Vector3.right * -_strafeSpeed * Time.deltaTime);
+        }
+        transform.Translate(Vector3.down * _speed * Time.deltaTime);
+    }
+
+    void HandleScreenExit()
+    {
+        float xPos, yPos;
+        if (_spawnData.minX == _spawnData.maxX)
+        {
+            xPos = _spawnData.minX;
+        }
+        else
+        {
+            xPos = Random.Range(_spawnData.minX, _spawnData.maxX);
         }
 
-        if (!_isDead && Time.time > _nextFire)
+        if (_spawnData.minY == _spawnData.maxY)
         {
-            FireLaser();
+            yPos = _spawnData.minY;
         }
+        else
+        {
+            yPos = Random.Range(_spawnData.minY, _spawnData.maxY);
+        }
+
+        transform.rotation = Quaternion.identity;
+        transform.Rotate(new Vector3(0f, 0f, _spawnData.rotationAngle));
+
+        transform.position = new Vector3(xPos, yPos, transform.position.z);
+        _spawnPos = transform.position;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -107,7 +237,9 @@ public class Enemy : MonoBehaviour
     private void FireLaser()
     {
         _nextFire = Time.time + Random.Range(3f, 7f);
-        Instantiate(_enemyLaserPrefab, transform.position, new Quaternion(0, 0, 180, 0));
+        GameObject laser = Instantiate(_enemyLaserPrefab, transform.position, transform.rotation);
+        laser.transform.Rotate(new Vector3(0f, 0f, 180f));
+
         _audioSource.clip = _laserSoundClip;
         _audioSource.Play();
     }

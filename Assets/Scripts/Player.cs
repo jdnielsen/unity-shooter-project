@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
     // ui manager
     private UIManager _uiManager;
     // camera
-    private Camera _camera;
+    private GameCamera _camera;
     // prefabs
     [SerializeField]
     private GameObject _laserPrefab;
@@ -93,7 +93,7 @@ public class Player : MonoBehaviour
         }
 
         // camera
-        _camera = GameObject.Find("Main Camera").GetComponent<Camera>();
+        _camera = GameObject.Find("Main Camera").GetComponent<GameCamera>();
         if (_camera == null)
         {
             Debug.LogError("Camera is NULL.");

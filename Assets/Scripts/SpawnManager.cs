@@ -20,6 +20,14 @@ public class SpawnManager : MonoBehaviour
 
     private bool _stopSpawning = false;
 
+    // spawn data
+    SpawnData Top = new SpawnData(-8f, 8f);
+    SpawnData TopLeft = new SpawnData(-8f, 0f, 40f);
+    SpawnData TopRight = new SpawnData(0f, 12f, -40f);
+    SpawnData Left = new SpawnData(-12f, -12f, 95f, 0f, 6f);
+    SpawnData Right = new SpawnData(12f, 12f, -90f, 0f, 6f);
+
+    SpawnData[] PossibleSpawns; 
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +39,8 @@ public class SpawnManager : MonoBehaviour
             _totalChances += powerup.GetComponent<Powerup>()._chances;
             _chanceRanges.Add(_totalChances);
         }
+
+        PossibleSpawns = new SpawnData[] { Top, TopLeft, TopRight, Left, Right };
     }
 
 
@@ -51,12 +61,57 @@ public class SpawnManager : MonoBehaviour
         yield return new WaitForSeconds(3.0f);
         while(!_stopSpawning)
         {
-            float randomX = Random.Range(-8.0f, 8.0f);
-            Vector3 enemyPos = new Vector3(randomX, 7.0f, 0.0f);
-            GameObject newEnemy = Instantiate(_enemyPrefab, enemyPos, Quaternion.identity);
-            newEnemy.transform.parent = _enemyContainer.transform;
+            int randomSpawn = Random.Range(0, PossibleSpawns.Length);
+            EnemySpawn(PossibleSpawns[randomSpawn]);
             yield return new WaitForSeconds(_enemySpawnRate);
         }
+    }
+
+    void EnemySpawn(SpawnData spawnData)
+    {
+        float xPos, yPos;
+        if (spawnData.minX == spawnData.maxX)
+        {
+            xPos = spawnData.minX;
+        }
+        else
+        {
+            xPos = Random.Range(spawnData.minX, spawnData.maxX);
+        }
+
+        if (spawnData.minY == spawnData.maxY)
+        {
+            yPos = spawnData.minY;
+        }
+        else
+        {
+            yPos = Random.Range(spawnData.minY, spawnData.maxY);
+        }
+
+        Vector3 enemyPos = new Vector3(xPos, yPos, 0f);
+        GameObject newEnemy = Instantiate(_enemyPrefab, enemyPos, Quaternion.identity, _enemyContainer.transform);
+        if (spawnData.rotationAngle != 0)
+        {
+            newEnemy.transform.Rotate(new Vector3(0f, 0f, spawnData.rotationAngle));
+        }
+        newEnemy.GetComponent<Enemy>().SetupEnemy(spawnData);
+    }
+
+    void EnemySpawnFromTop()
+    {
+        float randomX = Random.Range(-8.0f, 8.0f);
+        Vector3 enemyPos = new Vector3(randomX, 7.0f, 0.0f);
+        GameObject newEnemy = Instantiate(_enemyPrefab, enemyPos, Quaternion.identity);
+        newEnemy.transform.parent = _enemyContainer.transform;
+    }
+
+    void EnemySpawnFromTopLeft()
+    {
+        float randomX = Random.Range(-8.0f, 0.0f);
+        Vector3 enemyPos = new Vector3(randomX, 7.0f, 0.0f);
+        GameObject newEnemy = Instantiate(_enemyPrefab, enemyPos, Quaternion.identity);
+        newEnemy.transform.Rotate(new Vector3(0f, 0f, 40f));
+        newEnemy.transform.parent = _enemyContainer.transform;
     }
 
     IEnumerator PowerupSpawnRoutine()
