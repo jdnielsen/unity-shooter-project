@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-enum MovementPattern
+public enum MovementPattern
 {
     ForwardOnly = 0,
     ChasePlayer = 1,
@@ -25,6 +25,7 @@ public class Enemy : MonoBehaviour
     private Animator _animator;
     private AudioSource _audioSource;
     private BoxCollider2D _collider;
+    private SpawnManager _spawnManager;
     private bool _isDead;
     private float _nextFire;
 
@@ -63,6 +64,12 @@ public class Enemy : MonoBehaviour
             Debug.LogError("BoxCollider2D is NULL.");
         }
 
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+        if (_spawnManager == null)
+        {
+            Debug.LogError("Spawn Manager is NULL.");
+        }
+
         _isDead = false;
         _nextFire = Time.time + Random.Range(3f, 7f);
 
@@ -88,12 +95,14 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void SetupEnemy(SpawnData spawnData)
+    public void SetupEnemy(SpawnData spawnData, MovementPattern pattern)
     {
         _spawnData = spawnData;
 
-        int randomPattern = Random.Range(0, 4);
-        _movementPattern = (MovementPattern)randomPattern;
+        //int randomPattern = Random.Range(0, 4);
+        //_movementPattern = (MovementPattern)randomPattern;
+
+        _movementPattern = pattern;
     }
 
     void HandleMovement()
@@ -200,26 +209,29 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "Player")
+        if (!_isDead)
         {
-            Player player = other.GetComponent<Player>();
-            if (player != null)
+            if (other.tag == "Player")
             {
-                player.TakeDamage();
+                Player player = other.GetComponent<Player>();
+                if (player != null)
+                {
+                    player.TakeDamage();
+                }
+
+                OnDeath();
             }
 
-            OnDeath();
-        }
-
-        if (other.tag == "Laser")
-        {
-            Destroy(other.gameObject);
-            if (_player != null)
+            if (other.tag == "Laser")
             {
-                _player.AddToScore(10);
-            }
+                Destroy(other.gameObject);
+                if (_player != null)
+                {
+                    _player.AddToScore(10);
+                }
 
-            OnDeath();
+                OnDeath();
+            }
         }
     }
 
@@ -231,6 +243,7 @@ public class Enemy : MonoBehaviour
         _collider.enabled = false;
         _audioSource.clip = _explosionSoundClip;
         _audioSource.Play();
+        _spawnManager.EnemyDestroyed();
         Destroy(this.gameObject, 2.8f);
     }
 

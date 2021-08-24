@@ -13,6 +13,8 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Text _restartGameText;
     [SerializeField]
+    private Text _enemyWaveText;
+    [SerializeField]
     private Image _ammoMeter;
     [SerializeField]
     private Image _thrusterMeter;
@@ -31,7 +33,9 @@ public class UIManager : MonoBehaviour
         _scoreText.text = "Score: " + 0;
         _isGameOver = false;
         _gameOverText.gameObject.SetActive(false);
+        _gameOverText.text = "GAME OVER";
         _restartGameText.gameObject.SetActive(false);
+        _enemyWaveText.gameObject.SetActive(false);
 
         // game manager
         _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
@@ -103,5 +107,27 @@ public class UIManager : MonoBehaviour
             }
             yield return new WaitForSeconds(0.5f);
         }
+    }
+
+    public void WinGame()
+    {
+        _isGameOver = true;
+        _gameOverText.text = "YOU WIN!";
+        _gameOverText.gameObject.SetActive(true);
+        _restartGameText.gameObject.SetActive(true);
+        _gameManager.GameOver();
+    }
+
+    public void DisplayWaveText(string text)
+    {
+        _enemyWaveText.text = text;
+        StartCoroutine(DisplayWaveTextRoutine());
+    }
+
+    IEnumerator DisplayWaveTextRoutine()
+    {
+        _enemyWaveText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2f);
+        _enemyWaveText.gameObject.SetActive(false);
     }
 }
