@@ -58,6 +58,8 @@ public class Player : MonoBehaviour
     [SerializeField]
     private AudioClip _powerupSoundClip;
     [SerializeField]
+    private AudioClip _powerdownSoundClip;
+    [SerializeField]
     private float _powerupActiveTime = 5.0f;
     private float _tripleShotRemainingTime = 0f;
     private float _speedBoostRemainingTime = 0f;
@@ -288,6 +290,22 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void AntiAmmoPickup()
+    {
+        PlayPowerdownSound();
+        StartCoroutine(DrainAmmoCoroutine());
+    }
+
+    IEnumerator DrainAmmoCoroutine()
+    {
+        while (_currentAmmo > 0)
+        {
+            _currentAmmo--;
+            _uiManager.UpdateAmmo(_currentAmmo, _maxAmmo);
+            yield return new WaitForSeconds(0.05f);
+        }
+    }
+
 
     public void HealthPickup()
     {
@@ -412,6 +430,12 @@ public class Player : MonoBehaviour
     void PlayPowerupSound()
     {
         _audioSource.clip = _powerupSoundClip;
+        _audioSource.Play();
+    }
+
+    void PlayPowerdownSound()
+    {
+        _audioSource.clip = _powerdownSoundClip;
         _audioSource.Play();
     }
 

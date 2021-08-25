@@ -55,6 +55,9 @@ public class Powerup : MonoBehaviour
                     case 5:
                         player.HomingMissileActivate();
                         break;
+                    case 6:
+                        player.AntiAmmoPickup();
+                        break;
                     default:
                         Debug.Log("Powerup ID not found.");
                         break;

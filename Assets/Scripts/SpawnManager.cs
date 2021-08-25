@@ -180,8 +180,6 @@ public class SpawnManager : MonoBehaviour
             float randomX = Random.Range(-8.0f, 8.0f);
             Vector3 powerupPos = new Vector3(randomX, 7.0f, 0.0f);
 
-
-
             int randRoll = Random.Range(0, _totalChances);
             int powerupId = 0;
             for (int i = 0; i < _powerups.Count; i++)
@@ -192,8 +190,6 @@ public class SpawnManager : MonoBehaviour
                     break;
                 }
             }
-
-
 
             Instantiate(_powerups[powerupId], powerupPos, Quaternion.identity);
 
