@@ -25,7 +25,7 @@ public class Missile : MonoBehaviour
     void FixedUpdate()
     {
         // changing direction
-        if (_target != null && !_target.GetComponent<Enemy>().IsDead())
+        if (_target != null && !_target.GetComponent<EnemyBase>().IsDead())
         {
             Vector2 direction = (Vector2)_target.transform.position - rb.position;
             direction.Normalize();
@@ -63,7 +63,7 @@ public class Missile : MonoBehaviour
 
         foreach (GameObject e in enemies)
         {
-            if (!e.GetComponent<Enemy>().IsDead())
+            if (!e.GetComponent<EnemyBase>().IsDead())
             {
                 float distance = Vector3.Distance(e.transform.position, transform.position);
                 if (distance < closestDistance)

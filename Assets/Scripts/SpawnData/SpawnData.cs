@@ -9,7 +9,7 @@ public class SpawnData
     public float maxY;
     public float rotationAngle;
 
-    public SpawnData(float minX, float maxX, float angle = 0f, float minY = 7f, float maxY = 7f)
+    public SpawnData(float minX = -8f, float maxX = 8f, float angle = 0f, float minY = 7f, float maxY = 7f)
     {
         this.minX = minX;
         this.maxX = maxX;

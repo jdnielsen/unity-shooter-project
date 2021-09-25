@@ -2,93 +2,55 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WaveData
+public class EnemyInWave
 {
-    int _enemiesRemaining;
-    int _enemiesInWave;
-    int _minEnemiesInSpawn;
-    int _maxEnemiesInSpawn;
-    SpawnData[] _possibleSpawns;
-    MovementPattern[] _possiblePatterns;
-    string _waveEnterMessage;
-    string _waveExitMessage;
+    public int EnemiesInWave { get; set; }
 
-    public int EnemiesRemaining
+    public int MinEnemiesInSpawn { get; set; }
+
+    public int MaxEnemiesInSpawn { get; set; }
+
+    public SpawnData[] PossibleSpawns { get; set; }
+
+    public MovementPattern[] PossibleMovementPatterns { get; set; }
+
+    public EnemyType EnemyType { get; set; }
+
+    public float EntryDelay { get; set; }
+
+    public EnemyInWave(int numEnemies, int minEnemiesSpawn, int maxEnemiesSpawn, SpawnData[] spawns, 
+                           MovementPattern[] patterns, EnemyType type = EnemyType.Default, float entryDelay = 0f)
     {
-        get { return _enemiesRemaining; }
-        set { _enemiesRemaining = value; }
-    }
-
-    public int EnemiesInWave
-    {
-        get { return _enemiesInWave; }
-        set { _enemiesInWave = value; }
-    }
-
-    public int MinEnemiesInSpawn
-    {
-        get { return _minEnemiesInSpawn; }
-        set { _minEnemiesInSpawn = value; }
-    }
-
-    public int MaxEnemiesInSpawn
-    {
-        get { return _maxEnemiesInSpawn; }
-        set { _maxEnemiesInSpawn = value; }
-    }
-
-    public SpawnData[] PossibleSpawns
-    {
-        get { return _possibleSpawns; }
-        set { _possibleSpawns = value; }
-    }
-
-    public MovementPattern[] PossibleMovementPatterns
-    {
-        get { return _possiblePatterns; }
-        set { _possiblePatterns = value; }
-    }
-
-    public string WaveEnterMessage
-    {
-        get { return _waveEnterMessage; }
-        set { _waveEnterMessage = value; }
-    }
-
-    public string WaveExitMessage
-    {
-        get { return _waveExitMessage; }
-        set { _waveExitMessage = value; }
-    }
-
-    public WaveData(SpawnData[] possibleSpawnLocations, int minEnemiesInWave, int maxEnemiesInWave,
-                    int minEnemiesInSpawn, int maxEnemiesInSpawn, MovementPattern[] possiblePatterns, 
-                    string waveEnterMessage, string waveExitMessage)
-    {
-        // spawn locations
-        PossibleSpawns = possibleSpawnLocations;
-
-        // movement patterns
-        PossibleMovementPatterns = possiblePatterns;
-
-        // enemies in entire wave
-        if (maxEnemiesInWave > minEnemiesInWave)
-        {
-            EnemiesInWave = Random.Range(minEnemiesInWave, maxEnemiesInWave + 1);
-        }
-        else
-        {
-            EnemiesInWave = minEnemiesInWave;
-        }
-
-        // enemies in spawn
-        MinEnemiesInSpawn = minEnemiesInSpawn;
-        MaxEnemiesInSpawn = maxEnemiesInSpawn;
-
-        EnemiesRemaining = EnemiesInWave;
-
-        // ui messages
-        WaveEnterMessage = waveEnterMessage;
-        WaveExitMessage = waveExitMessage;
+        EnemiesInWave = numEnemies;
+        MinEnemiesInSpawn = minEnemiesSpawn;
+        MaxEnemiesInSpawn = maxEnemiesSpawn;
+        PossibleSpawns = spawns;
+        PossibleMovementPatterns = patterns;
+        EnemyType = type;
+        EntryDelay = entryDelay;
     }
 }
+
+public class Wave
+{
+    public EnemyInWave[] EnemiesInWave { get; set; }
+
+    public string WaveEnterMessage { get; set; }
+
+    public string WaveExitMessage { get; set; }
+
+    public float EnterMessageDuration { get; set; }
+
+    public float ExitMessageDuration { get; set; }
+
+    public Wave(EnemyInWave[] enemiesInWave, string enterMessage = "", string exitMessage = "", 
+                float enterDuration = 0f, float exitDuration = 0f)
+    {
+        EnemiesInWave = enemiesInWave;
+        WaveEnterMessage = enterMessage;
+        WaveExitMessage = exitMessage;
+        EnterMessageDuration = enterDuration;
+        ExitMessageDuration = exitDuration;
+    }
+}
+

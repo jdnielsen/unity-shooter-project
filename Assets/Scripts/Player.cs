@@ -54,6 +54,7 @@ public class Player : MonoBehaviour
     private GameObject _rightEngineFire;
     [SerializeField]
     private GameObject _leftEngineFire;
+    private float _nextDamage = 0f;
     //powerup variables
     [SerializeField]
     private AudioClip _powerupSoundClip;
@@ -227,6 +228,16 @@ public class Player : MonoBehaviour
         if (other.tag == "EnemyLaser")
         {
             Destroy(other.gameObject);
+            TakeDamage();
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+
+        if (other.tag == "EnemyBeam" && Time.time > _nextDamage)
+        {
+            _nextDamage = Time.time + 0.5f;
             TakeDamage();
         }
     }

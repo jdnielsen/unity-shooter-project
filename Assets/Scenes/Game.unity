@@ -2321,11 +2321,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df5438777732242458fa6eb3e1a62120, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyPrefab: {fileID: 2255970617007331236, guid: 263caaf05d690a94cb54f653925a10e5,
-    type: 3}
+  _enemyPrefabs:
+  - {fileID: 2255970617007331236, guid: 263caaf05d690a94cb54f653925a10e5, type: 3}
+  - {fileID: 6156472901807051647, guid: 19c45336bc5010442937e3911343d666, type: 3}
   _enemyContainer: {fileID: 1059115419}
   _enemySpawnRate: 5
-  _powerups:
+  _powerupPrefabs:
   - {fileID: 9113944954866414017, guid: 0a038b22f5c12ec4cace577d9a50a470, type: 3}
   - {fileID: 6698760109202156980, guid: 3f63a36066f87414b888b72859c4663d, type: 3}
   - {fileID: 9147721765190013009, guid: 36931ed2fd34a61478bc6c31f7d8fa05, type: 3}
