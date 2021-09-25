@@ -118,7 +118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 3
   _powerupId: 6
-  _chances: 5
+  _chances: 6
 --- !u!50 &75478137786156793
 Rigidbody2D:
   serializedVersion: 4

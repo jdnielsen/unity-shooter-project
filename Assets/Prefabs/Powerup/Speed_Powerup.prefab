@@ -136,7 +136,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 3
   _powerupId: 1
-  _chances: 5
+  _chances: 3
 --- !u!95 &2496252199624310466
 Animator:
   serializedVersion: 3
