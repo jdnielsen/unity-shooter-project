@@ -1251,8 +1251,10 @@ MonoBehaviour:
   _fireRate: 0.15
   _maxAmmo: 15
   _currentAmmo: 0
-  _shield: {fileID: 750748484}
   _shieldStrength: 0
+  _shieldDamageSoundClip: {fileID: 8300000, guid: 8117e33001361e5479396eb7b3038dc9,
+    type: 3}
+  _shield: {fileID: 750748484}
   _explosionPrefab: {fileID: 5492969845074753468, guid: 348493e7cd581b744ad512e5cbd6c469,
     type: 3}
   _rightEngineFire: {fileID: 971248755}

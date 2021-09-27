@@ -32,6 +32,8 @@ public abstract class EnemyBase : MonoBehaviour
     [SerializeField]
     protected AudioClip _enemyAttackSoundClip;
     [SerializeField]
+    protected AudioClip _shieldDamageSoundClip;
+    [SerializeField]
     protected GameObject _enemyAttackPrefab;
     [SerializeField]
     protected GameObject _enemyDeathPrefab;
@@ -66,6 +68,11 @@ public abstract class EnemyBase : MonoBehaviour
     protected int _enemyHealth = 1;
     protected bool _isDead;
     protected float _deathAnimationTime;
+
+    // shields
+    [SerializeField]
+    protected GameObject _shield;
+    protected int _shieldStrength = 0;
 
     // spawn
     protected SpawnData _spawnData;
@@ -103,6 +110,11 @@ public abstract class EnemyBase : MonoBehaviour
         if (_spawnManager == null)
         {
             Debug.LogError("Spawn Manager is NULL.");
+        }
+
+        if (_shield == null)
+        {
+            Debug.LogError("Player Shield is NULL.");
         }
 
         _isDead = false;
@@ -202,6 +214,19 @@ public abstract class EnemyBase : MonoBehaviour
 
     protected virtual void TakeDamage()
     {
+        if (_shieldStrength > 0)
+        {
+            _shieldStrength--;
+            _audioSource.clip = _shieldDamageSoundClip;
+            _audioSource.Play();
+
+            if (_shieldStrength <= 0)
+            {
+                _shield.SetActive(false);
+            }
+            return;
+        }
+
         _enemyHealth--;
         if (_enemyHealth <= 0)
         {
@@ -218,7 +243,7 @@ public abstract class EnemyBase : MonoBehaviour
         _collider.enabled = false;
         _audioSource.clip = _explosionSoundClip;
         _audioSource.Play();
-        _spawnManager.EnemyDestroyed();
+        //_spawnManager.EnemyDestroyed();
         Destroy(this.gameObject, _deathAnimationTime);
     }
 
@@ -330,5 +355,11 @@ public abstract class EnemyBase : MonoBehaviour
 
         _targetPosition.x = x;
         _targetPosition.y = y;
+    }
+
+    public void ActivateShield(int shieldStrength)
+    {
+        _shieldStrength = shieldStrength;
+        _shield.SetActive(true);
     }
 }

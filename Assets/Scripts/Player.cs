@@ -43,10 +43,12 @@ public class Player : MonoBehaviour
     private int _currentAmmo;
     // shield variables
     [SerializeField]
+    private int _shieldStrength = 0;
+    [SerializeField]
+    protected AudioClip _shieldDamageSoundClip;
+    [SerializeField]
     private GameObject _shield;
     private Renderer _shieldRenderer;
-    [SerializeField]
-    private int _shieldStrength = 0;
     // damage variables
     [SerializeField]
     private GameObject _explosionPrefab;
@@ -407,7 +409,9 @@ public class Player : MonoBehaviour
 
     public void ShieldTakeDamage()
     {
-        _shieldStrength--;
+        _shieldStrength--; 
+        _audioSource.clip = _shieldDamageSoundClip;
+        _audioSource.Play();
         StartCoroutine(ChangeShieldAppearanceCoroutine(false));
         if (_shieldStrength <= 0)
         {

@@ -18,8 +18,11 @@ public class EnemyInWave
 
     public float EntryDelay { get; set; }
 
+    public float ChanceToHaveShield { get; set; }
+
     public EnemyInWave(int numEnemies, int minEnemiesSpawn, int maxEnemiesSpawn, SpawnData[] spawns, 
-                           MovementPattern[] patterns, EnemyType type = EnemyType.Default, float entryDelay = 0f)
+                           MovementPattern[] patterns, EnemyType type = EnemyType.Default, float entryDelay = 0f, 
+                           float chanceToHaveShield = 0f)
     {
         EnemiesInWave = numEnemies;
         MinEnemiesInSpawn = minEnemiesSpawn;
@@ -28,6 +31,7 @@ public class EnemyInWave
         PossibleMovementPatterns = patterns;
         EnemyType = type;
         EntryDelay = entryDelay;
+        ChanceToHaveShield = chanceToHaveShield;
     }
 }
 

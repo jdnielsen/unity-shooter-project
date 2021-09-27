@@ -13,7 +13,7 @@ public class SpawnManager : MonoBehaviour
     private float _enemySpawnRate = 5.0f;
     int _enemyTypesSpawnedThisWave;
     int _totalEnemiesSpawned = 0;
-    int _totalEnemiesDestroyed = 0;
+    //int _totalEnemiesDestroyed = 0;
     // powerup variables
     [SerializeField]
     private List<GameObject> _powerupPrefabs;
@@ -52,7 +52,7 @@ public class SpawnManager : MonoBehaviour
         }
 
         // enemy spawns
-        _totalEnemiesDestroyed = 0;
+        //_totalEnemiesDestroyed = 0;
 
         SpawnData Top = new SpawnData(-8f, 8f);
         SpawnData TopLeft = new SpawnData(-8f, 0f, 40f);
@@ -65,28 +65,32 @@ public class SpawnManager : MonoBehaviour
         // enemy waves
         EnemyInWave firstWaveDefaultEnemies = 
             new EnemyInWave(5, 1, 3, new SpawnData[] { Top },
-                            new MovementPattern[] { MovementPattern.ForwardOnly });
+                            new MovementPattern[] { MovementPattern.ForwardOnly }, 
+                            EnemyType.Default, 0f, 10f);
         EnemyInWave secondWaveDefaultEnemies = 
             new EnemyInWave(5, 1, 3, new SpawnData[] { Left, Right },
-                            new MovementPattern[] { MovementPattern.TurnToBottom });
+                            new MovementPattern[] { MovementPattern.TurnToBottom },
+                            EnemyType.Default, 0f, 10f);
         EnemyInWave secondWaveAltEnemies =
             new EnemyInWave(1, 1, 1, new SpawnData[] { Top },
                             new MovementPattern[] { MovementPattern.ForwardOnly }, 
-                            EnemyType.Alternate, 4f);
+                            EnemyType.Alternate, 4f, 20f);
         EnemyInWave thirdWaveDefaultEnemies = 
             new EnemyInWave(10, 2, 5, new SpawnData[] { Top },
-                            new MovementPattern[] { MovementPattern.ForwardOnly, MovementPattern.Strafing });
+                            new MovementPattern[] { MovementPattern.ForwardOnly, MovementPattern.Strafing },
+                            EnemyType.Default, 0f, 10f);
         EnemyInWave thirdWaveAltEnemies =
             new EnemyInWave(2, 2, 2, new SpawnData[] { Top },
                             new MovementPattern[] { MovementPattern.ForwardOnly },
-                            EnemyType.Alternate, 4f);
+                            EnemyType.Alternate, 4f, 25f);
         EnemyInWave fourthWaveDefaultEnemies = 
             new EnemyInWave(10, 1, 3, new SpawnData[] { Top, TopLeft, TopRight },
-                            new MovementPattern[] { MovementPattern.ForwardOnly, MovementPattern.TurnToBottom, MovementPattern.ChasePlayer });
+                            new MovementPattern[] { MovementPattern.ForwardOnly, MovementPattern.TurnToBottom, MovementPattern.ChasePlayer },
+                            EnemyType.Default, 0f, 20f);
         EnemyInWave fourthWaveAltEnemies =
             new EnemyInWave(5, 1, 2, new SpawnData[] { Top },
                             new MovementPattern[] { MovementPattern.ForwardOnly },
-                            EnemyType.Alternate, 2f);
+                            EnemyType.Alternate, 2f, 35f);
 
         Wave firstWave = new Wave(new EnemyInWave[] { firstWaveDefaultEnemies },
                                   "FIRST WAVE APPROACHING\n---\nGET READY!", "FIRST WAVE DEFEATED!",
@@ -170,9 +174,18 @@ public class SpawnManager : MonoBehaviour
 
             for (int i = 0; i < enemiesToSpawn; i++)
             {
+                bool enemyHasShield = false;
                 int randomSpawn = Random.Range(0, enemyWave.PossibleSpawns.Length);
                 int randomPattern = Random.Range(0, enemyWave.PossibleMovementPatterns.Length);
-                EnemySpawn(enemyWave.EnemyType, enemyWave.PossibleSpawns[randomSpawn], enemyWave.PossibleMovementPatterns[randomPattern]);
+                float randomShieldChance = Random.Range(0f, 100f);
+                if (randomShieldChance <= enemyWave.ChanceToHaveShield)
+                {
+                    enemyHasShield = true;
+                }
+                EnemySpawn(enemyWave.EnemyType, 
+                           enemyWave.PossibleSpawns[randomSpawn], 
+                           enemyWave.PossibleMovementPatterns[randomPattern], 
+                           enemyHasShield);
                 remainingEnemiesInWave--;
             }
 
@@ -181,7 +194,7 @@ public class SpawnManager : MonoBehaviour
         _enemyTypesSpawnedThisWave++;
     }
 
-    void EnemySpawn(EnemyType type, SpawnData spawnData, MovementPattern pattern)
+    void EnemySpawn(EnemyType type, SpawnData spawnData, MovementPattern pattern, bool hasShield = false)
     {
         // type
         int typeID = 0;
@@ -224,7 +237,12 @@ public class SpawnManager : MonoBehaviour
         {
             newEnemy.transform.Rotate(new Vector3(0f, 0f, spawnData.rotationAngle));
         }
-        newEnemy.GetComponent<EnemyBase>().SetupEnemy(spawnData, pattern);
+        EnemyBase enemyScript = newEnemy.GetComponent<EnemyBase>();
+        enemyScript.SetupEnemy(spawnData, pattern);
+        if (hasShield)
+        {
+            enemyScript.ActivateShield(1);
+        }
 
         _totalEnemiesSpawned++;
     }
@@ -261,8 +279,8 @@ public class SpawnManager : MonoBehaviour
         _stopSpawning = true;
     }
 
-    public void EnemyDestroyed()
-    {
-        _totalEnemiesDestroyed++;
-    }
+    //public void EnemyDestroyed()
+    //{
+    //    _totalEnemiesDestroyed++;
+    //}
 }

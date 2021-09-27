@@ -44,7 +44,7 @@ public class EnemyAlternate : EnemyBase
             _isAttacking = false;
             RandomizeTargetPosition();
             _isMoving = true;
-            _nextMove = Time.time + 3f;
+            _nextMove = Time.time + 3.5f;
         }
     }
 
