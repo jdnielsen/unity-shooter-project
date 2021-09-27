@@ -75,43 +75,6 @@ public class EnemyDefault : EnemyBase
         }
     }
 
-    void MoveForwardOnly()
-    {
-        transform.Translate(Vector3.down * _forwardSpeed * Time.deltaTime);
-    }
-
-    void MoveChasePlayer()
-    {
-        Vector3 direction = transform.position - _player.transform.position;
-        direction.Normalize();
-
-        Quaternion toRotation = Quaternion.LookRotation(Vector3.forward, direction);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, _rotationSpeed * Time.deltaTime);
-
-        transform.Translate(Vector3.down * _forwardSpeed * Time.deltaTime);
-    }
-
-    void MoveTurnToBottom()
-    {
-        Quaternion toRotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, _rotationSpeed * Time.deltaTime);
-
-        transform.Translate(Vector3.down * _forwardSpeed * Time.deltaTime);
-    }
-
-    void MoveStrafing()
-    {
-        if (_spawnPosition.x < 0)
-        {
-            transform.Translate(Vector3.right * _strafeSpeed * Time.deltaTime);
-        }
-        else
-        {
-            transform.Translate(Vector3.right * -_strafeSpeed * Time.deltaTime);
-        }
-        transform.Translate(Vector3.down * _forwardSpeed * Time.deltaTime);
-    }
-
     protected override void OnDeath()
     {
         _animator.SetTrigger("OnEnemyDeath");

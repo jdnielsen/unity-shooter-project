@@ -322,10 +322,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 308515753}
+  - component: {fileID: 308515754}
   - component: {fileID: 308515752}
   - component: {fileID: 308515751}
   - component: {fileID: 308515750}
-  - component: {fileID: 308515754}
   - component: {fileID: 308515755}
   m_Layer: 0
   m_Name: Asteroid
@@ -2326,6 +2326,7 @@ MonoBehaviour:
   _enemyPrefabs:
   - {fileID: 2255970617007331236, guid: 263caaf05d690a94cb54f653925a10e5, type: 3}
   - {fileID: 6156472901807051647, guid: 19c45336bc5010442937e3911343d666, type: 3}
+  - {fileID: 3655873102051726305, guid: 7c6db9f2742b5a84fa5d4cb565c1df0f, type: 3}
   _enemyContainer: {fileID: 1059115419}
   _enemySpawnRate: 5
   _powerupPrefabs:

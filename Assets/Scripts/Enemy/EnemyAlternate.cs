@@ -8,8 +8,8 @@ public class EnemyAlternate : EnemyBase
     protected override void Start()
     {
         _forwardSpeed = 4f;
-        _strafeSpeed = 4f;
-        _rotationSpeed = 30f;
+        _strafeSpeed = 2f;
+        _rotationSpeed = 12f;
 
         _deathAnimationTime = 0.25f;
 

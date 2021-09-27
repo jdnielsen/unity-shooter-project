@@ -5,11 +5,13 @@ using UnityEngine;
 public enum EnemyType
 {
     Default,
-    Alternate
+    Alternate,
+    Aggressive
 }
 
 public enum MovementPattern
 {
+    Default,
     ForwardOnly,
     ChasePlayer,
     TurnToBottom,
@@ -362,4 +364,45 @@ public abstract class EnemyBase : MonoBehaviour
         _shieldStrength = shieldStrength;
         _shield.SetActive(true);
     }
+
+    #region Movement Patterns
+
+
+    protected void MoveForwardOnly()
+    {
+        transform.Translate(Vector3.down * _forwardSpeed * Time.deltaTime);
+    }
+
+    protected void MoveChasePlayer()
+    {
+        Vector3 direction = transform.position - _player.transform.position;
+        direction.Normalize();
+
+        Quaternion toRotation = Quaternion.LookRotation(Vector3.forward, direction);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, _rotationSpeed * Time.deltaTime);
+
+        transform.Translate(Vector3.down * _forwardSpeed * Time.deltaTime);
+    }
+
+    protected void MoveTurnToBottom()
+    {
+        Quaternion toRotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, _rotationSpeed * Time.deltaTime);
+
+        transform.Translate(Vector3.down * _forwardSpeed * Time.deltaTime);
+    }
+
+    protected void MoveStrafing()
+    {
+        if (_spawnPosition.x < 0)
+        {
+            transform.Translate(Vector3.right * _strafeSpeed * Time.deltaTime);
+        }
+        else
+        {
+            transform.Translate(Vector3.right * -_strafeSpeed * Time.deltaTime);
+        }
+        transform.Translate(Vector3.down * _forwardSpeed * Time.deltaTime);
+    }
+    #endregion
 }
