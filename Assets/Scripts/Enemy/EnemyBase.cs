@@ -6,7 +6,8 @@ public enum EnemyType
 {
     Default,
     Alternate,
-    Aggressive
+    Aggressive,
+    Smart
 }
 
 public enum MovementPattern
@@ -87,6 +88,9 @@ public abstract class EnemyBase : MonoBehaviour
     protected float _maxTargetY;
     protected Vector3 _targetPosition;
 
+    // points for player
+    protected int _pointValue = 10;
+
     // Start is called before the first frame update
     protected virtual void Start()
     {
@@ -157,7 +161,7 @@ public abstract class EnemyBase : MonoBehaviour
                 Destroy(other.gameObject);
                 if (_player != null)
                 {
-                    _player.AddToScore(10);
+                    _player.AddToScore(_pointValue);
                 }
 
                 TakeDamage();
@@ -245,7 +249,6 @@ public abstract class EnemyBase : MonoBehaviour
         _collider.enabled = false;
         _audioSource.clip = _explosionSoundClip;
         _audioSource.Play();
-        //_spawnManager.EnemyDestroyed();
         Destroy(this.gameObject, _deathAnimationTime);
     }
 

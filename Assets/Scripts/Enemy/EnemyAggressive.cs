@@ -14,6 +14,8 @@ public class EnemyAggressive : EnemyBase
     // Start is called before the first frame update
     protected override void Start()
     {
+        _pointValue = 15;
+
         _forwardSpeed = _normalSpeed;
         _rotationSpeed = 20f;
 

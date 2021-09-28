@@ -13,7 +13,7 @@ public class SpawnManager : MonoBehaviour
     private float _enemySpawnRate = 5.0f;
     int _enemyTypesSpawnedThisWave;
     int _totalEnemiesSpawned = 0;
-    //int _totalEnemiesDestroyed = 0;
+
     // powerup variables
     [SerializeField]
     private List<GameObject> _powerupPrefabs;
@@ -79,6 +79,10 @@ public class SpawnManager : MonoBehaviour
             new EnemyInWave(1, 1, 1, new SpawnData[] { Top },
                             new MovementPattern[] { MovementPattern.Default }, 
                             EnemyType.Alternate, 4f, 20f);
+        EnemyInWave secondWaveSmartEnemies =
+            new EnemyInWave(4, 1, 1, new SpawnData[] { Left, Right },
+                            new MovementPattern[] { MovementPattern.ForwardOnly },
+                            EnemyType.Smart, 6f, 20f);
         EnemyInWave thirdWaveDefaultEnemies = 
             new EnemyInWave(10, 2, 5, new SpawnData[] { Top },
                             new MovementPattern[] { MovementPattern.ForwardOnly, MovementPattern.Strafing },
@@ -99,17 +103,21 @@ public class SpawnManager : MonoBehaviour
             new EnemyInWave(5, 1, 2, new SpawnData[] { Top },
                             new MovementPattern[] { MovementPattern.Default },
                             EnemyType.Alternate, 2f, 35f);
+        EnemyInWave fourthWaveSmartEnemies =
+            new EnemyInWave(8, 1, 3, new SpawnData[] { TopLeft, TopRight },
+                            new MovementPattern[] { MovementPattern.ForwardOnly },
+                            EnemyType.Smart, 10f, 20f);
 
         Wave firstWave = new Wave(new EnemyInWave[] { firstWaveDefaultEnemies, firstWaveAggroEnemies },
                                   "FIRST WAVE APPROACHING\n---\nGET READY!", "FIRST WAVE DEFEATED!",
                                   3f, 3f);
-        Wave secondWave = new Wave(new EnemyInWave[] { secondWaveDefaultEnemies, secondWaveAltEnemies },
+        Wave secondWave = new Wave(new EnemyInWave[] { secondWaveDefaultEnemies, secondWaveAltEnemies, secondWaveSmartEnemies },
                                    "SECOND WAVE APPROACHING\n---\nGET READY!", "SECOND WAVE DEFEATED!",
                                    3f, 3f);
         Wave thirdWave = new Wave(new EnemyInWave[] { thirdWaveDefaultEnemies, thirdWaveAltEnemies, thirdWaveAggroEnemies },
                                   "THIRD WAVE APPROACHING\n---\nGET READY!", "THIRD WAVE DEFEATED!",
                                   3f, 3f);
-        Wave fourthWave = new Wave(new EnemyInWave[] { fourthWaveDefaultEnemies, fourthWaveAltEnemies },
+        Wave fourthWave = new Wave(new EnemyInWave[] { fourthWaveDefaultEnemies, fourthWaveAltEnemies, fourthWaveSmartEnemies },
                                   "FOURTH WAVE APPROACHING\n---\nGET READY!", "FOURTH WAVE DEFEATED!",
                                   3f, 3f);
 
@@ -150,7 +158,7 @@ public class SpawnManager : MonoBehaviour
             {
                 if (_stopSpawning)
                 {
-                    break;
+                    StopCoroutine(WaveRoutine());
                 }
                 yield return new WaitForSeconds(1f);
             }
@@ -216,6 +224,9 @@ public class SpawnManager : MonoBehaviour
                 break;
             case EnemyType.Aggressive:
                 typeID = 2;
+                break;
+            case EnemyType.Smart:
+                typeID = 3;
                 break;
             default:
                 typeID = 0;
@@ -289,9 +300,4 @@ public class SpawnManager : MonoBehaviour
     {
         _stopSpawning = true;
     }
-
-    //public void EnemyDestroyed()
-    //{
-    //    _totalEnemiesDestroyed++;
-    //}
 }

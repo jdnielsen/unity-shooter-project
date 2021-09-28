@@ -7,6 +7,8 @@ public class EnemyAlternate : EnemyBase
     // Start is called before the first frame update
     protected override void Start()
     {
+        _pointValue = 25;
+
         _forwardSpeed = 4f;
         _strafeSpeed = 2f;
         _rotationSpeed = 12f;

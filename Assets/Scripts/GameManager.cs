@@ -31,4 +31,11 @@ public class GameManager : MonoBehaviour
     {
         _isGameOver = true;
     }
+
+    public static bool ObjectRoughlyPointedAtTarget(Vector3 objectHeading, Vector3 objectPosition, Vector3 targetPosition, float threshold = .95f)
+    {
+        Vector3 direction = objectPosition - targetPosition;
+        direction.Normalize();
+        return Vector3.Dot(direction, objectHeading) > threshold;
+    }
 }
