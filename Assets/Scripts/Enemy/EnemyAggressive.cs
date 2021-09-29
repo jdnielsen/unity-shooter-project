@@ -34,19 +34,22 @@ public class EnemyAggressive : EnemyBase
 
     protected override void HandleAttack()
     {
-        float distanceToPlayer = Vector3.Distance(transform.position, _player.transform.position);
+        if (_player != null)
+        {
+            float distanceToPlayer = Vector3.Distance(transform.position, _player.transform.position);
 
-        if (IsPointedAtPlayer() && (distanceToPlayer < _rammingDistance))
-        {
-            _isAttacking = true;
-            _forwardSpeed = _rammingSpeed;
-            _thruster.SetActive(true);
-        }
-        else if (distanceToPlayer > _rammingDistance)
-        {
-            _isAttacking = false;
-            _forwardSpeed = _normalSpeed;
-            _thruster.SetActive(false);
+            if (IsPointedAtPlayer() && (distanceToPlayer < _rammingDistance))
+            {
+                _isAttacking = true;
+                _forwardSpeed = _rammingSpeed;
+                _thruster.SetActive(true);
+            }
+            else if (distanceToPlayer > _rammingDistance)
+            {
+                _isAttacking = false;
+                _forwardSpeed = _normalSpeed;
+                _thruster.SetActive(false);
+            }
         }
     }
 

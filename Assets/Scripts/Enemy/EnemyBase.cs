@@ -412,13 +412,20 @@ public abstract class EnemyBase : MonoBehaviour
 
     protected void MoveChasePlayer()
     {
-        Vector3 direction = transform.position - _player.transform.position;
-        direction.Normalize();
+        if (_player != null)
+        {
+            Vector3 direction = transform.position - _player.transform.position;
+            direction.Normalize();
 
-        Quaternion toRotation = Quaternion.LookRotation(Vector3.forward, direction);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, _rotationSpeed * Time.deltaTime);
+            Quaternion toRotation = Quaternion.LookRotation(Vector3.forward, direction);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, _rotationSpeed * Time.deltaTime);
 
-        transform.Translate(Vector3.down * _forwardSpeed * Time.deltaTime);
+            transform.Translate(Vector3.down * _forwardSpeed * Time.deltaTime);
+        }
+        else
+        {
+            MoveForwardOnly();
+        }
     }
 
     protected void MoveTurnToBottom()

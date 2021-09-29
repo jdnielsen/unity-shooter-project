@@ -13,11 +13,16 @@ public class Powerup : MonoBehaviour
     [SerializeField]
     private GameObject _powerupExplosion;
     private bool _isDestroyed = false;
+    private Transform _playerTransform;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        _playerTransform = GameObject.Find("Player").transform;
+        if (_playerTransform == null)
+        {
+            Debug.LogError("Player is NULL.");
+        }
     }
 
     // Update is called once per frame
@@ -25,7 +30,17 @@ public class Powerup : MonoBehaviour
     {
         if (!_isDestroyed)
         {
-            transform.Translate(Vector3.down * _speed * Time.deltaTime);
+            if (Input.GetKey(KeyCode.C))
+            {
+                Vector3 direction = _playerTransform.position - transform.position;
+                direction.Normalize();
+
+                transform.Translate(direction * _speed * Time.deltaTime);
+            }
+            else
+            {
+                transform.Translate(Vector3.down * _speed * Time.deltaTime);
+            }
         }
 
         if (transform.position.y < -5.0f)
