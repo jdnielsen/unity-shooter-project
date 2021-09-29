@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6698760109202156976}
+  - component: {fileID: 230988468077414525}
   - component: {fileID: 6698760109202156977}
   - component: {fileID: 6698760109202156978}
   - component: {fileID: 6698760109202156979}
-  - component: {fileID: 230988468077414525}
   - component: {fileID: 2496252199624310466}
   m_Layer: 0
   m_Name: Speed_Powerup
@@ -35,6 +35,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &230988468077414525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6698760109202156980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11fd2e916344ad243b8a70b1cfe4defa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _speed: 3
+  _powerupId: 1
+  _chances: 3
+  _powerupExplosion: {fileID: 6804648463612377822, guid: 5b8aedf359558074d8220d5bf44754ce,
+    type: 3}
 --- !u!212 &6698760109202156977
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -122,21 +139,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &230988468077414525
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6698760109202156980}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11fd2e916344ad243b8a70b1cfe4defa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _speed: 3
-  _powerupId: 1
-  _chances: 3
 --- !u!95 &2496252199624310466
 Animator:
   serializedVersion: 3

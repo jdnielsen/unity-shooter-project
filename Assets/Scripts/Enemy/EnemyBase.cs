@@ -28,6 +28,7 @@ public abstract class EnemyBase : MonoBehaviour
     protected AudioSource _audioSource;
     protected Collider2D _collider;
     protected SpawnManager _spawnManager;
+    protected Transform _powerupContainer;
 
     // sound clips
     [SerializeField]
@@ -117,6 +118,8 @@ public abstract class EnemyBase : MonoBehaviour
         {
             Debug.LogError("Spawn Manager is NULL.");
         }
+
+        _powerupContainer = _spawnManager.transform.GetChild(0);
 
         if (_shield == null)
         {
@@ -281,6 +284,37 @@ public abstract class EnemyBase : MonoBehaviour
         Vector3 direction = transform.position - _player.transform.position;
         direction.Normalize();
         return transform.up == direction;
+    }
+
+    protected bool IsPointedAtPossibleTarget(bool lookingForward, float threshold)
+    {
+        int direction = 1;
+        if (!lookingForward)
+        {
+            direction = -direction;
+        }
+
+        if (_player != null)
+        {
+            List<Transform> targets = new List<Transform>();
+            targets.Add(_player.transform);
+            if (_powerupContainer.childCount > 0)
+            {
+                targets.Add(_powerupContainer.GetChild(0));
+            }
+
+            foreach (Transform target in targets)
+            {
+                if (GameManager.ObjectRoughlyPointedAtTarget(transform.up * direction, 
+                                                         transform.position, 
+                                                         target.transform.position, 
+                                                         threshold))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     protected float TimeToNextMove()

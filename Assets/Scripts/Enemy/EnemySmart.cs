@@ -50,11 +50,11 @@ public class EnemySmart : EnemyBase
         {
             if (_player != null)
             {
-                if (GameManager.ObjectRoughlyPointedAtTarget(transform.up, transform.position, _player.transform.position, .92f))
+                if (IsPointedAtPossibleTarget(true, .92f))
                 {
                     ForwardAttack();
                 }
-                else if (GameManager.ObjectRoughlyPointedAtTarget(-transform.up, transform.position, _player.transform.position, .92f))
+                else if (IsPointedAtPossibleTarget(false, .92f))
                 {
                     RearAttack();
                 }

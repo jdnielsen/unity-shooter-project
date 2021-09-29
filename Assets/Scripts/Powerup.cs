@@ -10,6 +10,9 @@ public class Powerup : MonoBehaviour
     private int _powerupId;
     [SerializeField]
     public int _chances;
+    [SerializeField]
+    private GameObject _powerupExplosion;
+    private bool _isDestroyed = false;
 
     // Start is called before the first frame update
     void Start()
@@ -20,7 +23,10 @@ public class Powerup : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        if (!_isDestroyed)
+        {
+            transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        }
 
         if (transform.position.y < -5.0f)
         {
@@ -67,5 +73,16 @@ public class Powerup : MonoBehaviour
 
             Destroy(this.gameObject);
         }
+        else if (other.tag == "EnemyLaser")
+        {
+            DestroyPowerup();
+        }
+    }
+
+    void DestroyPowerup()
+    {
+        _isDestroyed = true;
+        Instantiate(_powerupExplosion, transform.position, transform.rotation);
+        Destroy(this.gameObject, .2f);
     }
 }

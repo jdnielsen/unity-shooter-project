@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9147721765190013011}
-  - component: {fileID: 9147721765190013008}
   - component: {fileID: 9147721765190013010}
+  - component: {fileID: 9147721765190013008}
   - component: {fileID: 7665036554270178516}
   - component: {fileID: 6656906980451279271}
   - component: {fileID: 1703610979342279124}
@@ -35,6 +35,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9147721765190013010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9147721765190013009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11fd2e916344ad243b8a70b1cfe4defa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _speed: 3
+  _powerupId: 2
+  _chances: 4
+  _powerupExplosion: {fileID: 6804648463612377822, guid: 5b8aedf359558074d8220d5bf44754ce,
+    type: 3}
 --- !u!212 &9147721765190013008
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -85,21 +102,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &9147721765190013010
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9147721765190013009}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11fd2e916344ad243b8a70b1cfe4defa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _speed: 3
-  _powerupId: 2
-  _chances: 4
 --- !u!58 &7665036554270178516
 CircleCollider2D:
   m_ObjectHideFlags: 0

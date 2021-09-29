@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8170543401115001755}
+  - component: {fileID: 4540801516236275101}
   - component: {fileID: 2927474517313931587}
   - component: {fileID: 5242191053497278853}
   - component: {fileID: 1094422409908629654}
   - component: {fileID: 7555803884260781198}
-  - component: {fileID: 4540801516236275101}
   m_Layer: 0
   m_Name: Missile_Powerup
   m_TagString: Powerup
@@ -35,6 +35,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4540801516236275101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7443132118084547293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11fd2e916344ad243b8a70b1cfe4defa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _speed: 3
+  _powerupId: 5
+  _chances: 1
+  _powerupExplosion: {fileID: 6804648463612377822, guid: 5b8aedf359558074d8220d5bf44754ce,
+    type: 3}
 --- !u!212 &2927474517313931587
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -141,18 +158,3 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 2.56
---- !u!114 &4540801516236275101
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7443132118084547293}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11fd2e916344ad243b8a70b1cfe4defa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _speed: 3
-  _powerupId: 5
-  _chances: 1

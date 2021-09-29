@@ -16,6 +16,8 @@ public class SpawnManager : MonoBehaviour
 
     // powerup variables
     [SerializeField]
+    private GameObject _powerupContainer;
+    [SerializeField]
     private List<GameObject> _powerupPrefabs;
 
     List<int> _chanceRanges;
@@ -288,7 +290,7 @@ public class SpawnManager : MonoBehaviour
                 }
             }
 
-            Instantiate(_powerupPrefabs[powerupId], powerupPos, Quaternion.identity);
+            Instantiate(_powerupPrefabs[powerupId], powerupPos, Quaternion.identity, _powerupContainer.transform);
 
             float nextPowerupSpawn = Random.Range(3.0f, 7.0f);
 

@@ -23,8 +23,10 @@ public class EnemyDefault : EnemyBase
 
         _minTimeToNextAttack = 3f;
         _maxTimeToNextAttack = 7f;
+        _minTimeToNextFire = 2f;
 
         _nextAttack = Time.time + TimeToNextAttack();
+        _nextFire = Time.time + TimeToNextFire();
 
         base.Start();
     }
@@ -41,13 +43,17 @@ public class EnemyDefault : EnemyBase
 
         if (Time.time > _nextAttack)
         {
-            GameObject enemyLaser = Instantiate(_enemyAttackPrefab, transform.position, transform.rotation);
-            enemyLaser.transform.Rotate(new Vector3(0f, 0f, 180f));
-
-            _audioSource.clip = _enemyAttackSoundClip;
-            _audioSource.Play();
-
-            _nextAttack = Time.time + TimeToNextAttack();
+            FireLaser();
+        }
+        else if (Time.time > _nextFire)
+        {
+            if (_player != null)
+            {
+                if (IsPointedAtPossibleTarget(true, .95f))
+                {
+                    FireLaser();
+                }
+            }
         }
     }
 
@@ -79,5 +85,17 @@ public class EnemyDefault : EnemyBase
     {
         _animator.SetTrigger("OnEnemyDeath");
         base.OnDeath();
+    }
+
+    void FireLaser()
+    {
+        GameObject enemyLaser = Instantiate(_enemyAttackPrefab, transform.position, transform.rotation);
+        enemyLaser.transform.Rotate(new Vector3(0f, 0f, 180f));
+
+        _audioSource.clip = _enemyAttackSoundClip;
+        _audioSource.Play();
+
+        _nextAttack = Time.time + TimeToNextAttack();
+        _nextFire = Time.time + TimeToNextFire();
     }
 }
