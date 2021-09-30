@@ -7,7 +7,8 @@ public enum EnemyType
     Default,
     Alternate,
     Aggressive,
-    Smart
+    Smart,
+    Agile
 }
 
 public enum MovementPattern
@@ -144,7 +145,7 @@ public abstract class EnemyBase : MonoBehaviour
         }
     }
 
-    protected void OnTriggerEnter2D(Collider2D other)
+    protected virtual void OnTriggerEnter2D(Collider2D other)
     {
         if (!_isDead)
         {

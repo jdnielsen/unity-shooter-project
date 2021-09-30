@@ -73,6 +73,10 @@ public class SpawnManager : MonoBehaviour
             new EnemyInWave(2, 1, 1, new SpawnData[] { Top },
                             new MovementPattern[] { MovementPattern.Default },
                             EnemyType.Aggressive, 6f, 10f);
+        EnemyInWave firstWaveAgileEnemies =
+            new EnemyInWave(1, 1, 1, new SpawnData[] { Top },
+                            new MovementPattern[] { MovementPattern.Default },
+                            EnemyType.Agile, 8f, 10f);
         EnemyInWave secondWaveDefaultEnemies = 
             new EnemyInWave(5, 1, 3, new SpawnData[] { Left, Right },
                             new MovementPattern[] { MovementPattern.TurnToBottom },
@@ -109,8 +113,12 @@ public class SpawnManager : MonoBehaviour
             new EnemyInWave(8, 1, 3, new SpawnData[] { TopLeft, TopRight },
                             new MovementPattern[] { MovementPattern.ForwardOnly },
                             EnemyType.Smart, 10f, 20f);
+        EnemyInWave fourthWaveAgileEnemies =
+            new EnemyInWave(3, 1, 1, new SpawnData[] { Top },
+                            new MovementPattern[] { MovementPattern.Default },
+                            EnemyType.Agile, 8f, 15f);
 
-        Wave firstWave = new Wave(new EnemyInWave[] { firstWaveDefaultEnemies, firstWaveAggroEnemies },
+        Wave firstWave = new Wave(new EnemyInWave[] { firstWaveDefaultEnemies, firstWaveAggroEnemies, firstWaveAgileEnemies },
                                   "FIRST WAVE APPROACHING\n---\nGET READY!", "FIRST WAVE DEFEATED!",
                                   3f, 3f);
         Wave secondWave = new Wave(new EnemyInWave[] { secondWaveDefaultEnemies, secondWaveAltEnemies, secondWaveSmartEnemies },
@@ -119,7 +127,7 @@ public class SpawnManager : MonoBehaviour
         Wave thirdWave = new Wave(new EnemyInWave[] { thirdWaveDefaultEnemies, thirdWaveAltEnemies, thirdWaveAggroEnemies },
                                   "THIRD WAVE APPROACHING\n---\nGET READY!", "THIRD WAVE DEFEATED!",
                                   3f, 3f);
-        Wave fourthWave = new Wave(new EnemyInWave[] { fourthWaveDefaultEnemies, fourthWaveAltEnemies, fourthWaveSmartEnemies },
+        Wave fourthWave = new Wave(new EnemyInWave[] { fourthWaveDefaultEnemies, fourthWaveAltEnemies, fourthWaveSmartEnemies, fourthWaveAgileEnemies },
                                   "FOURTH WAVE APPROACHING\n---\nGET READY!", "FOURTH WAVE DEFEATED!",
                                   3f, 3f);
 
@@ -230,6 +238,9 @@ public class SpawnManager : MonoBehaviour
             case EnemyType.Smart:
                 typeID = 3;
                 break;
+            case EnemyType.Agile:
+                typeID = 4;
+                break;
             default:
                 typeID = 0;
                 break;
@@ -262,6 +273,10 @@ public class SpawnManager : MonoBehaviour
             newEnemy.transform.Rotate(new Vector3(0f, 0f, spawnData.rotationAngle));
         }
         EnemyBase enemyScript = newEnemy.GetComponent<EnemyBase>();
+        if (enemyScript == null)
+        {
+            enemyScript = newEnemy.transform.GetChild(0).GetComponent<EnemyBase>();
+        }
         enemyScript.SetupEnemy(spawnData, pattern);
         if (hasShield)
         {
