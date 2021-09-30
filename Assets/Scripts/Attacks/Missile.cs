@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
 public class Missile : MonoBehaviour
 {
-    // rigid body
-    private Rigidbody2D rb;
-
     // speed variables
-    private float _speed = 10.0f;
-    private float _rotationSpeed = 240.0f;
+    private float _speed = 10f;
+    private float _rotationSpeed = 90f;
 
     // target
     private GameObject _target;
@@ -18,32 +14,27 @@ public class Missile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rb = transform.GetComponent<Rigidbody2D>();
         LockOnTarget();
     }
 
-    void FixedUpdate()
+    // Update is called once per frame
+    void Update()
     {
-        // changing direction
         if (_target != null && !_target.GetComponent<EnemyBase>().IsDead())
         {
-            Vector2 direction = (Vector2)_target.transform.position - rb.position;
+            Vector3 direction = _target.transform.position - transform.position;
             direction.Normalize();
-            float rotateAmount = Vector3.Cross(direction, transform.up).z;
-            rb.angularVelocity = -rotateAmount * _rotationSpeed;
+
+            Quaternion toRotation = Quaternion.LookRotation(Vector3.forward, direction);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, _rotationSpeed * Time.deltaTime);
         }
         else
         {
-            // eliminate angular velocity
-            rb.angularVelocity = 0;
-            // find a new target
             LockOnTarget();
         }
 
-
-        // forward velocity
-        rb.velocity = transform.up * _speed;
-
+        // travel forward
+        transform.Translate(Vector3.up * _speed * Time.deltaTime);
 
         // destroy out of bounds
         if (transform.position.y > 8.0f ||
@@ -54,7 +45,6 @@ public class Missile : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
-
 
     private void LockOnTarget()
     {

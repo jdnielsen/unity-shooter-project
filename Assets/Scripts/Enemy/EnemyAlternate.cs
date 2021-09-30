@@ -11,7 +11,7 @@ public class EnemyAlternate : EnemyBase
 
         _forwardSpeed = 4f;
         _strafeSpeed = 2f;
-        _rotationSpeed = 12f;
+        _rotationSpeed = 15f;
 
         _deathAnimationTime = 0.25f;
 

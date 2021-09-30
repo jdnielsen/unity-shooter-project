@@ -1242,7 +1242,7 @@ MonoBehaviour:
     type: 3}
   _tripleShotPrefab: {fileID: 4551308762292247347, guid: 2e2f2eb0d1539ee4b982c873b44de4dd,
     type: 3}
-  _missilePrefab: {fileID: 7050163804993394128, guid: 0bf9594fd2eb43346b270ffe4fd613a3,
+  _missilePrefab: {fileID: 4394116283114514897, guid: 24c44e9cb25126345b63cc6549d6b874,
     type: 3}
   _missileSoundClip: {fileID: 8300000, guid: 7fd446d0c6375ec4abc54bef32d81bfe, type: 3}
   _laserSoundClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}

@@ -49,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 3
   _powerupId: 3
-  _chances: 12
+  _chances: 20
   _powerupExplosion: {fileID: 6804648463612377822, guid: 5b8aedf359558074d8220d5bf44754ce,
     type: 3}
 --- !u!212 &3268353903120163870
