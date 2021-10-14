@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Beam : MonoBehaviour
 {
-    private float _beamGrowthRate = 0.05f;
+    private float _beamGrowthRate = 0.08f;
     private float _beamGrowthPeriod = 0.01f;
     private float _beamDuration = 2.5f;
     private float _chargeDuration = 0.5f;

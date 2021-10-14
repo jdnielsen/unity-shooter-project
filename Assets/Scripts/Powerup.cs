@@ -30,7 +30,7 @@ public class Powerup : MonoBehaviour
     {
         if (!_isDestroyed)
         {
-            if (Input.GetKey(KeyCode.C))
+            if (Input.GetKey(KeyCode.C) && _playerTransform != null)
             {
                 Vector3 direction = _playerTransform.position - transform.position;
                 direction.Normalize();
@@ -88,8 +88,12 @@ public class Powerup : MonoBehaviour
 
             Destroy(this.gameObject);
         }
-        else if (other.tag == "EnemyLaser")
+        else if (other.tag == "EnemyLaser" || other.tag == "EnemyBeam")
         {
+            if (other.tag == "EnemyLaser")
+            {
+                Destroy(other.gameObject);
+            }
             DestroyPowerup();
         }
     }

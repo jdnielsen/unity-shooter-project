@@ -8,7 +8,8 @@ public enum EnemyType
     Alternate,
     Aggressive,
     Smart,
-    Agile
+    Agile,
+    Boss
 }
 
 public enum MovementPattern
@@ -30,6 +31,7 @@ public abstract class EnemyBase : MonoBehaviour
     protected Collider2D _collider;
     protected SpawnManager _spawnManager;
     protected Transform _powerupContainer;
+    protected SpriteRenderer _renderer;
 
     // sound clips
     [SerializeField]
@@ -38,6 +40,10 @@ public abstract class EnemyBase : MonoBehaviour
     protected AudioClip _enemyAttackSoundClip;
     [SerializeField]
     protected AudioClip _shieldDamageSoundClip;
+    [SerializeField]
+    protected AudioClip _enemyDamageSoundClip;
+
+    // prefabs
     [SerializeField]
     protected GameObject _enemyAttackPrefab;
     [SerializeField]
@@ -70,6 +76,7 @@ public abstract class EnemyBase : MonoBehaviour
     protected int _maxFiresInAttack;
 
     // enemy health and death
+    [SerializeField]
     protected int _enemyHealth = 1;
     protected bool _isDead;
     protected float _deathAnimationTime;
@@ -120,6 +127,12 @@ public abstract class EnemyBase : MonoBehaviour
             Debug.LogError("Spawn Manager is NULL.");
         }
 
+        _renderer = GetComponent<SpriteRenderer>();
+        if (_renderer == null)
+        {
+            Debug.LogError("Sprite Renderer is NULL.");
+        }
+
         _powerupContainer = _spawnManager.transform.GetChild(0);
 
         if (_shield == null)
@@ -163,10 +176,6 @@ public abstract class EnemyBase : MonoBehaviour
             if (other.tag == "Laser")
             {
                 Destroy(other.gameObject);
-                if (_player != null)
-                {
-                    _player.AddToScore(_pointValue);
-                }
 
                 TakeDamage();
             }
@@ -242,10 +251,21 @@ public abstract class EnemyBase : MonoBehaviour
         {
             OnDeath();
         }
+        else
+        {
+            StartCoroutine(FlashRed());
+            _audioSource.clip = _enemyDamageSoundClip;
+            _audioSource.Play();
+        }
     }
 
     protected virtual void OnDeath()
     {
+        if (_player != null)
+        {
+            _player.AddToScore(_pointValue);
+        }
+
         _forwardSpeed = 0;
         _strafeSpeed = 0;
         _rotationSpeed = 0;
@@ -254,6 +274,13 @@ public abstract class EnemyBase : MonoBehaviour
         _audioSource.clip = _explosionSoundClip;
         _audioSource.Play();
         Destroy(this.gameObject, _deathAnimationTime);
+    }
+
+    IEnumerator FlashRed()
+    {
+        _renderer.color = Color.red;
+        yield return new WaitForSeconds(.1f);
+        _renderer.color = Color.white;
     }
 
     public bool IsDead()

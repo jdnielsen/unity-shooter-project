@@ -8,6 +8,8 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private List<GameObject> _enemyPrefabs;
     [SerializeField]
+    GameObject _enemyBossPrefab;
+    [SerializeField]
     private GameObject _enemyContainer;
     [SerializeField]
     private float _enemySpawnRate = 5.0f;
@@ -61,8 +63,9 @@ public class SpawnManager : MonoBehaviour
         SpawnData TopRight = new SpawnData(0f, 12f, -40f);
         SpawnData Left = new SpawnData(-12f, -12f, 95f, 0f, 6f);
         SpawnData Right = new SpawnData(12f, 12f, -90f, 0f, 6f);
+        SpawnData Boss = new SpawnData(0f, 0f, 0f, -15f, -15f);
 
-        _possibleSpawns = new SpawnData[] { Top, TopLeft, TopRight, Left, Right };
+        _possibleSpawns = new SpawnData[] { Top, TopLeft, TopRight, Left, Right, Boss };
 
         // enemy waves
         EnemyInWave firstWaveDefaultEnemies = 
@@ -70,13 +73,13 @@ public class SpawnManager : MonoBehaviour
                             new MovementPattern[] { MovementPattern.ForwardOnly }, 
                             EnemyType.Default, 0f, 10f);
         EnemyInWave firstWaveAggroEnemies =
-            new EnemyInWave(2, 1, 1, new SpawnData[] { Top },
-                            new MovementPattern[] { MovementPattern.Default },
-                            EnemyType.Aggressive, 6f, 10f);
-        EnemyInWave firstWaveAgileEnemies =
             new EnemyInWave(1, 1, 1, new SpawnData[] { Top },
                             new MovementPattern[] { MovementPattern.Default },
-                            EnemyType.Agile, 8f, 10f);
+                            EnemyType.Aggressive, 6f, 10f);
+        //EnemyInWave firstWaveAgileEnemies =
+        //    new EnemyInWave(1, 1, 1, new SpawnData[] { Top },
+        //                    new MovementPattern[] { MovementPattern.Default },
+        //                    EnemyType.Agile, 8f, 10f);
         EnemyInWave secondWaveDefaultEnemies = 
             new EnemyInWave(5, 1, 3, new SpawnData[] { Left, Right },
                             new MovementPattern[] { MovementPattern.TurnToBottom },
@@ -86,11 +89,11 @@ public class SpawnManager : MonoBehaviour
                             new MovementPattern[] { MovementPattern.Default }, 
                             EnemyType.Alternate, 4f, 20f);
         EnemyInWave secondWaveSmartEnemies =
-            new EnemyInWave(4, 1, 1, new SpawnData[] { Left, Right },
+            new EnemyInWave(1, 1, 1, new SpawnData[] { Left, Right },
                             new MovementPattern[] { MovementPattern.ForwardOnly },
                             EnemyType.Smart, 6f, 20f);
         EnemyInWave thirdWaveDefaultEnemies = 
-            new EnemyInWave(10, 2, 5, new SpawnData[] { Top },
+            new EnemyInWave(6, 2, 5, new SpawnData[] { Top },
                             new MovementPattern[] { MovementPattern.ForwardOnly, MovementPattern.Strafing },
                             EnemyType.Default, 0f, 10f);
         EnemyInWave thirdWaveAltEnemies =
@@ -98,27 +101,64 @@ public class SpawnManager : MonoBehaviour
                             new MovementPattern[] { MovementPattern.Default },
                             EnemyType.Alternate, 4f, 25f);
         EnemyInWave thirdWaveAggroEnemies =
-            new EnemyInWave(4, 1, 2, new SpawnData[] { Top },
+            new EnemyInWave(2, 1, 2, new SpawnData[] { Top },
                             new MovementPattern[] { MovementPattern.Default },
                             EnemyType.Aggressive, 8f, 20f);
         EnemyInWave fourthWaveDefaultEnemies = 
-            new EnemyInWave(10, 1, 3, new SpawnData[] { Top, TopLeft, TopRight },
+            new EnemyInWave(6, 1, 3, new SpawnData[] { Top, TopLeft, TopRight },
                             new MovementPattern[] { MovementPattern.ForwardOnly, MovementPattern.TurnToBottom, MovementPattern.ChasePlayer },
                             EnemyType.Default, 0f, 20f);
         EnemyInWave fourthWaveAltEnemies =
-            new EnemyInWave(5, 1, 2, new SpawnData[] { Top },
+            new EnemyInWave(2, 1, 2, new SpawnData[] { Top },
                             new MovementPattern[] { MovementPattern.Default },
                             EnemyType.Alternate, 2f, 35f);
         EnemyInWave fourthWaveSmartEnemies =
-            new EnemyInWave(8, 1, 3, new SpawnData[] { TopLeft, TopRight },
+            new EnemyInWave(2, 1, 3, new SpawnData[] { TopLeft, TopRight },
                             new MovementPattern[] { MovementPattern.ForwardOnly },
                             EnemyType.Smart, 10f, 20f);
         EnemyInWave fourthWaveAgileEnemies =
-            new EnemyInWave(3, 1, 1, new SpawnData[] { Top },
+            new EnemyInWave(2, 1, 1, new SpawnData[] { Top },
                             new MovementPattern[] { MovementPattern.Default },
                             EnemyType.Agile, 8f, 15f);
+        EnemyInWave fifthWaveDefaultEnemies =
+            new EnemyInWave(6, 1, 3, new SpawnData[] { Top, TopLeft, TopRight },
+                            new MovementPattern[] { MovementPattern.ForwardOnly, MovementPattern.TurnToBottom, MovementPattern.ChasePlayer },
+                            EnemyType.Default, 0f, 20f);
+        EnemyInWave fifthWaveMoreDefaultEnemies =
+            new EnemyInWave(6, 1, 3, new SpawnData[] { Top },
+                            new MovementPattern[] { MovementPattern.ForwardOnly },
+                            EnemyType.Default, 16f, 20f);
+        EnemyInWave fifthWaveAltEnemies =
+            new EnemyInWave(3, 1, 2, new SpawnData[] { Top },
+                            new MovementPattern[] { MovementPattern.Default },
+                            EnemyType.Alternate, 4f, 35f);
+        EnemyInWave fifthWaveSmartEnemies =
+            new EnemyInWave(2, 1, 3, new SpawnData[] { TopLeft, TopRight },
+                            new MovementPattern[] { MovementPattern.ForwardOnly },
+                            EnemyType.Smart, 20f, 20f);
+        EnemyInWave fifthWaveAgileEnemies =
+            new EnemyInWave(3, 1, 1, new SpawnData[] { Top },
+                            new MovementPattern[] { MovementPattern.Default },
+                            EnemyType.Agile, 16f, 15f);
+        EnemyInWave bossWaveBossEnemy =
+            new EnemyInWave(1, 1, 1, new SpawnData[] { Boss },
+                            new MovementPattern[] { MovementPattern.Default },
+                            EnemyType.Boss, 0f, 0f);
+        EnemyInWave bossWaveDefaultEnemies =
+            new EnemyInWave(6, 2, 4, new SpawnData[] { Top },
+                            new MovementPattern[] { MovementPattern.ForwardOnly },
+                            EnemyType.Default, 12f, 20f); ;
+        EnemyInWave bossWaveMoreDefaultEnemies =
+            new EnemyInWave(6, 2, 4, new SpawnData[] { Top },
+                            new MovementPattern[] { MovementPattern.ForwardOnly },
+                            EnemyType.Default, 24f, 20f); ; 
+        EnemyInWave bossWaveEvenMoreDefaultEnemies =
+             new EnemyInWave(6, 2, 4, new SpawnData[] { Top },
+                             new MovementPattern[] { MovementPattern.ForwardOnly },
+                             EnemyType.Default, 36f, 20f); ;
 
-        Wave firstWave = new Wave(new EnemyInWave[] { firstWaveDefaultEnemies, firstWaveAggroEnemies, firstWaveAgileEnemies },
+
+        Wave firstWave = new Wave(new EnemyInWave[] { firstWaveDefaultEnemies, firstWaveAggroEnemies },
                                   "FIRST WAVE APPROACHING\n---\nGET READY!", "FIRST WAVE DEFEATED!",
                                   3f, 3f);
         Wave secondWave = new Wave(new EnemyInWave[] { secondWaveDefaultEnemies, secondWaveAltEnemies, secondWaveSmartEnemies },
@@ -130,8 +170,15 @@ public class SpawnManager : MonoBehaviour
         Wave fourthWave = new Wave(new EnemyInWave[] { fourthWaveDefaultEnemies, fourthWaveAltEnemies, fourthWaveSmartEnemies, fourthWaveAgileEnemies },
                                   "FOURTH WAVE APPROACHING\n---\nGET READY!", "FOURTH WAVE DEFEATED!",
                                   3f, 3f);
+        Wave fifthWave = new Wave(new EnemyInWave[] { fifthWaveDefaultEnemies, fifthWaveMoreDefaultEnemies, fifthWaveAgileEnemies, fifthWaveAltEnemies, fifthWaveSmartEnemies },
+                                  "FIFTH WAVE APPROACHING\n---\nGET READY!", "FIFTH WAVE DEFEATED!",
+                                  3f, 3f);
+        Wave bossWave = new Wave(new EnemyInWave[] { bossWaveBossEnemy, bossWaveDefaultEnemies, bossWaveMoreDefaultEnemies, bossWaveEvenMoreDefaultEnemies },
+                                 "CAUTION\n---\nLARGE ENEMY APPROACHING\n---\nGET READY!", "ENEMY BOSS DEFEATED!",
+                                 3f, 3f);
 
-        _enemyWaves = new Wave[] { firstWave, secondWave, thirdWave, fourthWave };
+        _enemyWaves = new Wave[] { firstWave, secondWave, thirdWave, fourthWave, fifthWave, bossWave };
+        //_enemyWaves = new Wave[] { firstWave, bossWave };
     }
 
 
@@ -241,6 +288,9 @@ public class SpawnManager : MonoBehaviour
             case EnemyType.Agile:
                 typeID = 4;
                 break;
+            case EnemyType.Boss:
+                BossSpawn();
+                return;
             default:
                 typeID = 0;
                 break;
@@ -284,6 +334,12 @@ public class SpawnManager : MonoBehaviour
         }
 
         _totalEnemiesSpawned++;
+    }
+
+    void BossSpawn()
+    {
+        Vector3 bossSpawnPosition = new Vector3(0, -15, 5);
+        Instantiate(_enemyBossPrefab, bossSpawnPosition, Quaternion.identity, _enemyContainer.transform);
     }
 
     IEnumerator PowerupSpawnRoutine()

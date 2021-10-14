@@ -285,8 +285,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1314708447
-  m_SortingLayer: 1
+  m_SortingLayerID: 1196474157
+  m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 351f30ffb741fd643b82bde90a222699, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -429,7 +429,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 308515749}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.03, y: 4.39, z: 0}
+  m_LocalPosition: {x: 0, y: 4.39, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2359,6 +2359,8 @@ MonoBehaviour:
   - {fileID: 3655873102051726305, guid: 7c6db9f2742b5a84fa5d4cb565c1df0f, type: 3}
   - {fileID: 570672771652575145, guid: 6da9c65cf37763b4eb4e2b485eb67869, type: 3}
   - {fileID: 2200883172458087157, guid: 7d42c00011e4c254f98130717b2b7cb5, type: 3}
+  _enemyBossPrefab: {fileID: 5001928791597532262, guid: 78faef5b0e433e448aa9f9f7e78ec429,
+    type: 3}
   _enemyContainer: {fileID: 1059115419}
   _enemySpawnRate: 5
   _powerupContainer: {fileID: 1410463127}
